@@ -1,4 +1,6 @@
-# Write for a Terminal of 80 characters wide and 24 rows high
+# ------------------------- LIBRARY IMPORTS ---------------------------
+# Created by me to store and print pokemon ascii art 
+from pokemon_ascii_art import print_pokemon
 
 
 # ---------------------------- API SETUP ------------------------------
@@ -30,7 +32,28 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 # Access sheet for project
 SHEET = GSPREAD_CLIENT.open('pokemon_portfolio')
 
-login = SHEET.worksheet('login')
+# login = SHEET.worksheet('login')
 
-data = login.get_all_values()
-print(data)
+# data = login.get_all_values()
+# print(data)
+
+# --------------------------- CLASSES -----------------------------
+
+
+
+
+# -------------------------- FUNCTIONS ----------------------------
+
+def display_welcome_banner():
+    print_pokemon("pikachu_banner")
+
+
+# ----------------------------- MAIN -------------------------------
+
+def main():
+    """
+    Run Pokemon Portfolio command-line utility 
+    """
+    display_welcome_banner()
+
+main()
