@@ -1,6 +1,8 @@
 # ------------------------- LIBRARY IMPORTS ---------------------------
 # Created by me to store and print pokemon ascii art 
 from pokemon_ascii_art import print_pokemon
+# Creates text-based ASCII art banners
+import pyfiglet as pyf
 
 
 # ---------------------------- API SETUP ------------------------------
@@ -45,6 +47,11 @@ SHEET = GSPREAD_CLIENT.open('pokemon_portfolio')
 # -------------------------- FUNCTIONS ----------------------------
 
 def display_welcome_banner():
+    font = pyf.Figlet(font="big", width=110)
+    welcome_msg = font.renderText("Pokemon Portfolio")
+    welcome_msg = welcome_msg.rstrip()
+
+    print(welcome_msg)
     print_pokemon("pikachu_banner")
 
 
