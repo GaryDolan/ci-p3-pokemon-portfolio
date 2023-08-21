@@ -1,10 +1,18 @@
 # ------------------------- LIBRARY IMPORTS ---------------------------
 # Created by me to store and print pokemon ascii art 
 from pokemon_ascii_art import print_pokemon
+
 # Creates text-based ASCII art banners
 import pyfiglet as pyf
+
 # Allows interaction with the operating systems functionalities
 import os
+
+# Add colors to text output
+from termcolor import colored
+
+# Allows access to functions to work with regular expressions
+import re
 
 
 # ---------------------------- API SETUP ------------------------------
@@ -74,7 +82,8 @@ def login_options():
         None
     """
     while True:
-        print_center_text("Please select an option (1-3) from the options and enter it below\n")
+        print_center_string(colored("Please select an option (1-3) from the options and enter it below\n", attrs = ['bold', 'underline']))
+
         print("1. Log into your account")
         print("2. Create an account")
         print("3. Password recovery\n")
@@ -110,26 +119,39 @@ def password_recovery():
 
 def print_art_font(string):
     """
-    
+    Uses pyfiglet library to convert given string into an art font style
+   
+    Parameters: 
+        text (string): Text to be converted
+    Returns: 
+        None
     """
     font = pyf.Figlet(font="big", width=110)
     msg = font.renderText(string)
     msg = msg.rstrip()
     print(msg)           
    
-def print_center_text(text):
+def print_center_string(string):
     """
     Centers and prints the given text to the terminal 
+    If text contains ascii escape codes for color etc
+    the function will stip these out for calculating 
+    spacing but will still print original text 
 
     Parameters: 
-        text (string): Text to be centered and printed
+        String (string): String to be centered and printed
     Returns: 
         None
     """
+
     terminal_width = os.get_terminal_size().columns
-    spaces = int((terminal_width - len(text)) /2)
-    centered_text = " " * spaces + text
-    print(centered_text)
+
+    # If string contains ascii escape chars, use re to clear them before calculations
+    processed_string = re.sub(r"(\x1b|\033)\[[0-9;]*m", "", string)
+
+    spaces = int((terminal_width - len(processed_string)) /2)
+    centered_string = " " * spaces + string
+    print(centered_string)
 
 def clear_terminal():
     if os.name == "posix":  # Linux and macOS
@@ -169,8 +191,3 @@ def main():
     display_welcome_banner()
 
 main()
-
-
-        
-    
-    
