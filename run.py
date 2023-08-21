@@ -82,7 +82,7 @@ def login_options():
         None
     """
     while True:
-        print_center_string(colored("Please select an option (1-3) from the options and enter it below\n", attrs = ['bold', 'underline']))
+        print_center_string(colored("Please select an option (1-3) from the list shown and enter it below\n", attrs = ['bold', 'underline']))
 
         print("1. Log into your account")
         print("2. Create an account")
@@ -164,7 +164,6 @@ def validate_input(input_str, available_choices):
     """
     Validates input can be converted to an int
     Also validates that user input was one of the available choices
-    
 
     Parameters: 
         input (string): User input to be validated
@@ -175,9 +174,9 @@ def validate_input(input_str, available_choices):
     try:
         input_value = int(input_str)
         if input_value not in available_choices:
-            raise ValueError(f"Input must be 1 of the choices given ({available_choices[0]} - {available_choices[-1]}), you entered {input_value}\n")
+            raise ValueError(f"Input must be one of the options listed ({available_choices[0]} - {available_choices[-1]}), you entered {input_value}")
     except ValueError as e:
-        print(f"\nInvalid selection: {e}, please select one of the options listed\n")
+        print_center_string(colored (f"Invalid selection: {e}, please try again\n", 'red'))
         return False
     return input_value
 
