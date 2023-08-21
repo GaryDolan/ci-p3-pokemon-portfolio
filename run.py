@@ -46,7 +46,7 @@ SHEET = GSPREAD_CLIENT.open('pokemon_portfolio')
 
 
 
-# -------------------------- FUNCTIONS ----------------------------
+# --------------------- APP LOGIC FUNCTIONS -----------------------
 
 def display_welcome_banner():
     '''
@@ -57,10 +57,7 @@ def display_welcome_banner():
     Returns: 
         None
     '''
-    font = pyf.Figlet(font="big", width=110)
-    welcome_msg = font.renderText("Pokemon Portfolio")
-    welcome_msg = welcome_msg.rstrip()
-    print(welcome_msg)
+    print_art_font("Pokemon Portfolio")
 
     print_pokemon("pikachu_banner")
 
@@ -78,8 +75,8 @@ def login_options():
     """
     while True:
         print_center_text("Please select an option (1-3) from the options and enter it below\n")
-        print("1. Create an account")
-        print("2. Log into your account")
+        print("1. Log into your account")
+        print("2. Create an account")
         print("3. Password recovery\n")
 
         login_selection = input("Enter your selection:\n")
@@ -87,15 +84,38 @@ def login_options():
         validated_selection = validate_input(login_selection, list(range(1, 4)))
 
         if validated_selection == 1:
-            create_account()
+            account_login()
             break
         elif validated_selection == 2:
-            account_login()
+            create_account()
             break
         elif validated_selection == 3:
             password_recovery()
             break
-            
+
+def account_login():
+    clear_terminal()
+    print_art_font("        Account Login")
+
+def create_account():
+    clear_terminal()
+    print_art_font(" Account Creation")
+
+def password_recovery():
+    clear_terminal()
+    print_art_font("  Recover Password")
+
+
+# ----------------------- HELPER FUNCTIONS ------------------------
+
+def print_art_font(string):
+    """
+    
+    """
+    font = pyf.Figlet(font="big", width=110)
+    msg = font.renderText(string)
+    msg = msg.rstrip()
+    print(msg)           
    
 def print_center_text(text):
     """
@@ -110,6 +130,12 @@ def print_center_text(text):
     spaces = int((terminal_width - len(text)) /2)
     centered_text = " " * spaces + text
     print(centered_text)
+
+def clear_terminal():
+    if os.name == "posix":  # Linux and macOS
+        os.system("clear")
+    elif os.name == "nt":  # Windows
+        os.system("cls")
 
 
 def validate_input(input_str, available_choices):
@@ -133,21 +159,12 @@ def validate_input(input_str, available_choices):
         return False
     return input_value
 
-def create_account():
-    print("create account")
-
-def account_login():
-    print("account_login")
-
-def password_recovery():
-    print("password recovery")
-
 
 # ----------------------------- MAIN -------------------------------
 
 def main():
     """
-    Run Pokemon Portfolio command-line utility 
+    Run Pokemon Portfolio terminal application
     """
     display_welcome_banner()
 
