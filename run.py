@@ -74,7 +74,7 @@ def display_welcome_banner():
 def login_options():
     """
     Displays the login opitions to user.
-    Takes user input, validates and calls appropiate function.  
+    Takes user selection, validates and calls appropiate function.  
 
     Parameters: 
         None
@@ -90,7 +90,7 @@ def login_options():
 
         login_selection = input("Enter your selection:\n")
 
-        validated_selection = validate_input(login_selection, list(range(1, 4)))
+        validated_selection = validate_selection(login_selection, list(range(1, 4)))
 
         if validated_selection == 1:
             account_login()
@@ -109,6 +109,18 @@ def account_login():
 def create_account():
     clear_terminal()
     print_art_font(" Account Creation")
+
+    print("\n\n\n")
+    print_center_string(colored("Please follow the steps below to create an account\n", attrs = ['bold', 'underline']))
+
+    username = get_valid_username()
+    
+    # ad this line in once I confirm that the username is not taken in gsheets, if taken, print taken and call get valid username again
+    #print_center_string(colored("Username available\n", 'green'))
+
+    #password = get_valid_password()
+    #phone_num = get_valid_phone_num()
+        
 
 def password_recovery():
     clear_terminal()
@@ -159,27 +171,56 @@ def clear_terminal():
     elif os.name == "nt":  # Windows
         os.system("cls")
 
+# --------------------- VALIDATION FUNCTIONS ----------------------
 
-def validate_input(input_str, available_choices):
+def validate_selection(selection_str, available_choices):
     """
-    Validates input can be converted to an int
-    Also validates that user input was one of the available choices
+    Validates user selcection from a choice of numbers
+    Validates that it can be converted to an int
+    Also validates that user selection was one of the available choices
 
     Parameters: 
-        input (string): User input to be validated
+        selection_str (string): User selection to be validated
         available_choices (list): List of choices available to user 
     Returns: 
-        int or False: Returns input value as an int if valid otherwise returns False
+        int or False: Returns selection value as an int if valid otherwise returns False
     """
     try:
-        input_value = int(input_str)
-        if input_value not in available_choices:
-            raise ValueError(f"Input must be one of the options listed ({available_choices[0]} - {available_choices[-1]}), you entered {input_value}")
+        selection_value = int(selection_str)
+        if selection_value not in available_choices:
+            raise ValueError(f"Available options ({available_choices[0]} - {available_choices[-1]}), you entered {selection_value}")
     except ValueError as e:
-        print_center_string(colored (f"Invalid selection: {e}, please try again\n", 'red'))
+        print_center_string(colored(f"Invalid selection: {e}, please try again\n", 'red'))
         return False
-    return input_value
+    return selection_value
 
+def get_valid_username():
+    while True:
+        try:
+            # print("Please enter a username between 5 and 15 characters long\n")
+            username = input("Please enter a username between 5 and 15 characters long,\n(You may user letters, numbers, _ or -) : ")
+
+            if len(username) < 5:
+                raise ValueError("Username must be at least 5 characters")
+            
+            if len(username) > 15:
+                raise ValueError("Username can not be more than 15 characters")
+            if not re.match("^[a-zA-Z0-9_-]*$", username):
+                raise ValueError("Username can only use letters, numbers, _ or -")
+             
+            return (username)
+        
+
+        except ValueError as e:
+            print_center_string(colored(f"Invalid username: {e}, please try again\n", 'red'))
+
+        
+
+def get_valid_password():
+    pass
+
+def get_valid_phone_num():
+    pass
 
 # ----------------------------- MAIN -------------------------------
 
