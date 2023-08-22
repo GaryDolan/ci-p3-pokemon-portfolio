@@ -111,6 +111,7 @@ def login_options():
 def account_login():
     clear_terminal()
     print_art_font("        Account Login")
+    # print(username is case sensitive)
 
 
 def create_account():
@@ -126,15 +127,22 @@ def create_account():
     )
 
     username = get_valid_username()
-
-    # ad this line in once I confirm that the username is not taken in gsheets, if taken, print taken and call get valid username again
-    # print_center_string(colored("Username available\n", 'green'))
+    print_center_string(colored("Username available\n", "green"))
 
     password = get_valid_password()
 
     phone_num = get_valid_phone_num()
-    # add this after I validate that phone num is not in gsheets already
-    # print_center_string(colored("Username available\n", 'green'))
+
+    print_center_string(colored("Creating Account ....\n", "green"))
+
+    # Store user account details
+    account_details = [username, password, phone_num]
+    login_worksheet = SHEET.worksheet("login")
+    login_worksheet.append_row(account_details)
+
+    print_center_string(
+        colored("Accound created successfully\n", "green", attrs=["bold", "underline"])
+    )
 
 
 def password_recovery():
@@ -184,10 +192,48 @@ def print_center_string(string):
 
 
 def clear_terminal():
+    """
+    Clears text from trminal
+    """
     if os.name == "posix":  # Linux and macOS
         os.system("clear")
     elif os.name == "nt":  # Windows
         os.system("cls")
+
+
+def check_username_taken(username):
+    """
+    Check if username is already stored in google sheet
+
+    Parameters:
+        username (string): String to search for in gogle sheets
+    Returns:
+        True or False (boolean): True if username foun, false otherwise
+
+    """
+    login_worksheet = SHEET.worksheet("login")
+    username_found = login_worksheet.find(username, in_column=1)
+    if username_found:
+        return True
+    else:
+        return False
+
+
+def check_phone_num_taken(phone_num):
+    """
+    Check if phone number is already stored in google sheet
+
+    Parameters:
+        username (string): String to search for in gogle sheets
+    Returns:
+        True or False (boolean): True if username foun, false otherwise
+    """
+    login_worksheet = SHEET.worksheet("login")
+    phone_num_found = login_worksheet.find(phone_num, in_column=3)
+    if phone_num_found:
+        return True
+    else:
+        return False
 
 
 # --------------------- VALIDATION FUNCTIONS ----------------------
@@ -224,7 +270,7 @@ def get_valid_username():
     while True:
         try:
             username = input(
-                "\nPlease enter a username between 5 and 15 characters long,\n(You may user letters, numbers, _ or -) : "
+                "\nPlease enter a username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : "
             )
 
             if len(username) < 5:
@@ -232,9 +278,12 @@ def get_valid_username():
 
             if len(username) > 15:
                 raise ValueError("Username can not be more than 15 characters")
+
             if not re.match("^[a-zA-Z0-9_-]*$", username):
                 raise ValueError("Username can only use letters, numbers, _ or -")
 
+            if check_username_taken(username):
+                raise ValueError("Username aleady in use")
             return username
 
         except ValueError as e:
@@ -284,6 +333,9 @@ def get_valid_phone_num():
 
             if not re.match("^[0-9]*$", phone_num):
                 raise ValueError("Please only use numbers")
+
+            if check_phone_num_taken(phone_num):
+                raise ValueError("Phone number aleady in use")
 
             return phone_num
 
