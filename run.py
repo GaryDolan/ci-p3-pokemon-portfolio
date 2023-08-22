@@ -109,12 +109,25 @@ def login_options():
 
 
 def account_login():
+    """ """
     clear_terminal()
     print_art_font("        Account Login")
     # print(username is case sensitive)
 
 
 def create_account():
+    """
+    Used to create a new user account
+    Takes username, password and phone num from user and validates
+    Stores new user details in google sheet
+    Assigns the user a column in the base_set_shadowless sheet
+    Preps workbook for next user
+
+    Parameters:
+        None
+    Returns:
+        None
+    """
     clear_terminal()
     print_art_font(" Account Creation")
 
@@ -140,12 +153,22 @@ def create_account():
     login_worksheet = SHEET.worksheet("login")
     login_worksheet.append_row(account_details)
 
+    # Assign the user the next available column in base_set_shadowless sheet and add his username to column
+    bss_worksheet = SHEET.worksheet("base_set_shadowless")
+    next_avail_column = bss_worksheet.acell("A2").value
+    bss_worksheet.update_acell(next_avail_column + "1", username)
+
+    # Increment the next_avail_column stored in gsheets, and add a new column to ensure were always ready and hava a column for next account creation
+    bss_worksheet.update_acell("A2", increment_gsheet_column_value(next_avail_column))
+    add_column_to_sheet("base_set_shadowless")
+
     print_center_string(
-        colored("Accound created successfully\n", "green", attrs=["bold", "underline"])
+        colored("Account created successfully\n", "green", attrs=["bold", "underline"])
     )
 
 
 def password_recovery():
+    """ """
     clear_terminal()
     print_art_font("  Recover Password")
 
@@ -234,6 +257,58 @@ def check_phone_num_taken(phone_num):
         return True
     else:
         return False
+
+
+# ----------------------- GSHEETS FUNCTIONS -----------------------
+
+
+def increment_gsheet_column_value(column):
+    """
+    Used to increment column values in gsheets.
+    Pass in A returns B
+    Pass in Z returns AA
+    Pass in GZ returns HA etc.
+
+
+
+    Parameters:
+        column (string): Column to be incremented
+    Returns:
+        incremented_col (string): Value of the next column
+
+    """
+    # use in the case where we reach Z and need to move to AA
+    if column == "":
+        return "A"
+
+    last_char_in_column = column[-1]
+    other_chars = column[:-1]
+
+    if last_char_in_column == "Z":
+        # call this function again passing in other_chars to update the letters before the Z and change the Z to A
+        return increment_gsheet_column_value(other_chars) + "A"
+    else:
+        return other_chars + chr(ord(last_char_in_column) + 1)
+
+
+def add_column_to_sheet(sheet_name):
+    """
+    Adds a new column to the specified google sheet
+
+    Parameters:
+        sheet_name (string): Sheet to add column to
+    Returns:
+        None:
+    """
+    worksheet = SHEET.worksheet(sheet_name)
+    empty_lists = [[]]
+    last_col_index = worksheet.col_count - 1
+    worksheet.insert_cols(
+        empty_lists,
+        col=last_col_index,
+        value_input_option="RAW",
+        inherit_from_before=True,
+    )
 
 
 # --------------------- VALIDATION FUNCTIONS ----------------------
