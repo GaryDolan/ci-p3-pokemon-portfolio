@@ -93,9 +93,9 @@ def login_options():
 
         print("1. Log into your account")
         print("2. Create an account")
-        print("3. Password recovery\n")
+        print("3. Password reset\n")
 
-        login_selection = input("Enter your selection:\n")
+        login_selection = input("Enter your selection: ")
 
         validated_selection = validate_selection(login_selection, list(range(1, 4)))
 
@@ -106,14 +106,14 @@ def login_options():
             create_account()
             break
         elif validated_selection == 3:
-            password_recovery()
+            reset_password()
             break
 
 
 def account_login():
     """ """
     clear_terminal()
-    print_art_font("        Account Login")
+    print_art_font("       Account  Login")
     # print(username is case sensitive)
 
 
@@ -171,10 +171,77 @@ def create_account():
     )
 
 
-def password_recovery():
-    """ """
+def reset_password():
+    """
+    Allows user to reset password
+    """
+
     clear_terminal()
-    print_art_font("  Recover Password")
+    print_art_font("      Password  Reset")
+
+    print("\n\n\n")
+    print_center_string(
+        colored(
+            "Please follow the steps below to reset your password\n",
+            attrs=["bold", "underline"],
+        )
+    )
+
+    phone_num = get_valid_phone_num(False)
+
+    print_center_string("Checking for account ....\n")
+
+    if check_phone_num_in_use(phone_num):
+        # Find the row their phone number is on and return the corrisponding username
+        login_worksheet = SHEET.worksheet("login")
+        phone_num_found = login_worksheet.find(phone_num, in_column=4)
+        row_num = phone_num_found.row
+        username = login_worksheet.cell(row_num, 1).value
+
+        print_center_string(
+            colored(f"Account found, username is {username}\n", "green")
+        )
+
+        # Get and store new password
+        password_and_salt = get_valid_password()
+        hashed_password, salt = password_and_salt
+
+        # Write users new hashed pass and salt
+        login_worksheet.update_acell("B" + str(row_num), hashed_password)
+        login_worksheet.update_acell("C" + str(row_num), salt)
+
+        print("")
+        print_center_string(colored("Password has been reset\n", "green"))
+
+    else:
+        print_center_string(
+            colored(
+                "The phone number entered is not associated with an acconut\n", "red"
+            )
+        )
+
+    # Return to login menu or try again
+    while True:
+        print_center_string(
+            colored(
+                "Please select option (1 or 2) from the list shown and enter it below\n",
+                attrs=["bold", "underline"],
+            )
+        )
+
+        print("1. Reset password again")
+        print("2. Return to home page\n")
+
+        login_selection = input("Enter your selection: ")
+
+        validated_selection = validate_selection(login_selection, list(range(1, 3)))
+
+        if validated_selection == 1:
+            reset_password()
+            break
+        elif validated_selection == 2:
+            display_welcome_banner()
+            break
 
 
 # ----------------------- HELPER FUNCTIONS ------------------------
@@ -246,14 +313,14 @@ def check_username_taken(username):
         return False
 
 
-def check_phone_num_taken(phone_num):
+def check_phone_num_in_use(phone_num):
     """
     Check if phone number is already stored in google sheet
 
     Parameters:
         username (string): String to search for in gogle sheets
     Returns:
-        True or False (boolean): True if username foun, false otherwise
+        True or False (boolean): True if username found, false otherwise
     """
     login_worksheet = SHEET.worksheet("login")
     phone_num_found = login_worksheet.find(phone_num, in_column=4)
@@ -435,20 +502,20 @@ def get_valid_password():
             )
 
 
-def get_valid_phone_num():
+def get_valid_phone_num(check_for_match=True):
     """
     Gets a valid phone number from user
     Phone number can be between 10 and 15 digits
 
     Parameters:
-        None:
+        check_for_match (boolean): Flag used to control if we check gsheets for matching number
     Returns:
         phone_num (string): Validated phone number chosen by user
     """
     while True:
         try:
             phone_num = input(
-                "\nPlease enter a mobile phone number consisting of 10 to 15 digits: "
+                "\nPlease enter your mobile phone number consisting of 10 to 15 digits: "
             )
 
             if len(phone_num) < 10:
@@ -460,8 +527,9 @@ def get_valid_phone_num():
             if not re.match("^[0-9]*$", phone_num):
                 raise ValueError("Please only use numbers")
 
-            if check_phone_num_taken(phone_num):
-                raise ValueError("Phone number aleady in use")
+            if check_for_match:
+                if check_phone_num_in_use(phone_num):
+                    raise ValueError("Phone number aleady in use")
 
             return phone_num
 
