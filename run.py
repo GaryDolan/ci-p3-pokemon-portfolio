@@ -66,6 +66,8 @@ def display_welcome_banner():
     Returns:
         None
     """
+    clear_terminal()
+
     print_art_font("Pokemon Portfolio")
 
     print_pokemon("pikachu_banner")
@@ -111,10 +113,77 @@ def login_options():
 
 
 def account_login():
-    """ """
+    """
+    Allows user to login to app using their username and password
+    Retrieves stored password for username and compares to entered pass
+
+    Parameters:
+        None
+    Returns:
+        None
+    """
+
     clear_terminal()
     print_art_font("       Account  Login")
-    # print(username is case sensitive)
+
+    print("\n\n\n")
+    print_center_string(
+        colored(
+            "Please enter your username and password below to login (both are case sensitive)\n",
+            attrs=["bold", "underline"],
+        )
+    )
+
+    username = get_valid_username(False)
+
+    if check_username_in_use(username):
+        password_attempt = get_valid_password(False)
+
+        print_center_string("Logging in ....\n")
+
+        # Find the row their username is on and return the corrisponding password
+        login_worksheet = SHEET.worksheet("login")
+        username_found = login_worksheet.find(username, in_column=1)
+        row_num = username_found.row
+        stored_hashed_pass = login_worksheet.cell(row_num, 2).value
+
+        # Slice the b'' from the stored pass and change type from string to bytes for comparison
+        stored_hashed_pass = stored_hashed_pass[2:-1].encode("utf-8")
+        password_attempt_bytes = password_attempt.encode()
+
+        if bcrypt.checkpw(password_attempt_bytes, stored_hashed_pass):
+            print_center_string(colored("Login Successful\n", "green"))
+            # return true to main menu from this call and then call main menu and create use object
+            main_menu()
+        else:
+            print_center_string(colored("Login failed, password incorrect\n", "red"))
+
+    else:
+        print_center_string(
+            colored("The username entered is not associated with an acconut\n", "red")
+        )
+
+        while True:
+            print_center_string(
+                colored(
+                    "Please select option (1 or 2) from the list shown and enter it below\n",
+                    attrs=["bold", "underline"],
+                )
+            )
+
+            print("1. Proceed to main menu")
+            print("2. Return to home page\n")
+
+            login_selection = input("Enter your selection: ")
+
+            validated_selection = validate_selection(login_selection, list(range(1, 3)))
+
+            if validated_selection == 1:
+                main_menu()
+                break
+            elif validated_selection == 2:
+                display_welcome_banner()
+                break
 
 
 def create_account():
@@ -144,16 +213,13 @@ def create_account():
     # get new user details
     username = get_valid_username()
     print_center_string(colored("Username available\n", "green"))
-
-    password_and_salt = get_valid_password()
-    hashed_password, salt = password_and_salt
-
+    password = get_valid_password()
     phone_num = get_valid_phone_num()
 
-    print_center_string(colored("Creating Account ....\n", "green"))
+    print_center_string("Creating Account ....\n")
 
     # Store user account details
-    account_details = [username, hashed_password, salt, phone_num]
+    account_details = [username, password, phone_num]
     login_worksheet = SHEET.worksheet("login")
     login_worksheet.append_row(account_details)
 
@@ -170,13 +236,35 @@ def create_account():
         colored("Account created successfully\n", "green", attrs=["bold", "underline"])
     )
 
+    while True:
+        print_center_string(
+            colored(
+                "Please select option (1 or 2) from the list shown and enter it below\n",
+                attrs=["bold", "underline"],
+            )
+        )
+
+        print("1. Create another account")
+        print("2. Return to home page\n")
+
+        login_selection = input("Enter your selection: ")
+
+        validated_selection = validate_selection(login_selection, list(range(1, 3)))
+
+        if validated_selection == 1:
+            create_account()
+            break
+        elif validated_selection == 2:
+            display_welcome_banner()
+            break
+
 
 def reset_password():
     """
     Allows user to reset password
     """
-
     clear_terminal()
+
     print_art_font("      Password  Reset")
 
     print("\n\n\n")
@@ -194,7 +282,7 @@ def reset_password():
     if check_phone_num_in_use(phone_num):
         # Find the row their phone number is on and return the corrisponding username
         login_worksheet = SHEET.worksheet("login")
-        phone_num_found = login_worksheet.find(phone_num, in_column=4)
+        phone_num_found = login_worksheet.find(phone_num, in_column=3)
         row_num = phone_num_found.row
         username = login_worksheet.cell(row_num, 1).value
 
@@ -203,12 +291,10 @@ def reset_password():
         )
 
         # Get and store new password
-        password_and_salt = get_valid_password()
-        hashed_password, salt = password_and_salt
+        hashed_password = get_valid_password()
 
-        # Write users new hashed pass and salt
+        # Write users new hashed pass
         login_worksheet.update_acell("B" + str(row_num), hashed_password)
-        login_worksheet.update_acell("C" + str(row_num), salt)
 
         print("")
         print_center_string(colored("Password has been reset\n", "green"))
@@ -242,6 +328,10 @@ def reset_password():
         elif validated_selection == 2:
             display_welcome_banner()
             break
+
+
+def main_menu():
+    pass
 
 
 # ----------------------- HELPER FUNCTIONS ------------------------
@@ -295,7 +385,7 @@ def clear_terminal():
         os.system("cls")
 
 
-def check_username_taken(username):
+def check_username_in_use(username):
     """
     Check if username is already stored in google sheet
 
@@ -323,7 +413,7 @@ def check_phone_num_in_use(phone_num):
         True or False (boolean): True if username found, false otherwise
     """
     login_worksheet = SHEET.worksheet("login")
-    phone_num_found = login_worksheet.find(phone_num, in_column=4)
+    phone_num_found = login_worksheet.find(phone_num, in_column=3)
     if phone_num_found:
         return True
     else:
@@ -337,16 +427,15 @@ def hash_password(password):
     Parameters:
         password (string): Password to be hashed
     Returns:
-        password_and_salt (tuple): Tuple containing the hashed password and salt used
+        password (string): String representing the hashed password
     """
     salt = bcrypt.gensalt()
     hashed_pass = bcrypt.hashpw(password.encode(), salt)
 
     # retured as strings for storage in gsheets
     hashed_pass = str(hashed_pass)
-    salt = str(salt)
 
-    return (hashed_pass, salt)
+    return hashed_pass
 
 
 # ----------------------- GSHEETS FUNCTIONS -----------------------
@@ -429,13 +518,13 @@ def validate_selection(selection_str, available_choices):
     return selection_value
 
 
-def get_valid_username():
+def get_valid_username(check_for_match=True):
     """
     Gets a valid username from the user
     Username can be between 5-15 chars long and include _ or -
 
     Parameters:
-        None:
+        check_for_match (boolean): Flag used to control if we check gsheets for matching username
     Returns:
         username (string): Validated username chosen by user
 
@@ -443,7 +532,7 @@ def get_valid_username():
     while True:
         try:
             username = input(
-                "\nPlease enter a username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : "
+                "\nPlease enter username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : "
             )
 
             if len(username) < 5:
@@ -455,8 +544,9 @@ def get_valid_username():
             if not re.match("^[a-zA-Z0-9_-]*$", username):
                 raise ValueError("Username can only use letters, numbers, _ or -")
 
-            if check_username_taken(username):
-                raise ValueError("Username aleady in use")
+            if check_for_match:
+                if check_username_in_use(username):
+                    raise ValueError("Username aleady in use")
             return username
 
         except ValueError as e:
@@ -466,16 +556,16 @@ def get_valid_username():
             )
 
 
-def get_valid_password():
+def get_valid_password(hash_pass=True):
     """
     Gets a valid password from user
     Password can be between 5 and 15 chars and use  _ , - , & or !
     Hashes password via call to external function
 
     Parameters:
-        None:
+        hash_pass: Flag to allow password hashing to be skipped
     Returns:
-        password_and_salt (tuple): Validated, Hashed password and salt used"""
+        password (string): Validated, Hashed password"""
     while True:
         try:
             password = input(
@@ -491,9 +581,11 @@ def get_valid_password():
             if not re.match("^[a-zA-Z0-9_&!-]*$", password):
                 raise ValueError("Please only use letters, numbers, _ , - , & or !")
 
-            password_and_salt = hash_password(password)
-
-            return password_and_salt
+            if hash_pass:
+                password = hash_password(password)
+                return password
+            else:
+                return password
 
         except ValueError as e:
             print("")
