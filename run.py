@@ -157,33 +157,14 @@ def account_login():
             main_menu()
         else:
             print_center_string(colored("Login failed, password incorrect\n", "red"))
+            select_from_avail_options(account_login, "Try again")
 
     else:
         print_center_string(
-            colored("The username entered is not associated with an acconut\n", "red")
+            colored("The username entered is not associated with an account\n", "red")
         )
 
-        while True:
-            print_center_string(
-                colored(
-                    "Please select option (1 or 2) from the list shown and enter it below\n",
-                    attrs=["bold", "underline"],
-                )
-            )
-
-            print("1. Proceed to main menu")
-            print("2. Return to home page\n")
-
-            login_selection = input("Enter your selection: ")
-
-            validated_selection = validate_selection(login_selection, list(range(1, 3)))
-
-            if validated_selection == 1:
-                main_menu()
-                break
-            elif validated_selection == 2:
-                display_welcome_banner()
-                break
+        select_from_avail_options(account_login, "Try again")
 
 
 def create_account():
@@ -236,27 +217,7 @@ def create_account():
         colored("Account created successfully\n", "green", attrs=["bold", "underline"])
     )
 
-    while True:
-        print_center_string(
-            colored(
-                "Please select option (1 or 2) from the list shown and enter it below\n",
-                attrs=["bold", "underline"],
-            )
-        )
-
-        print("1. Create another account")
-        print("2. Return to home page\n")
-
-        login_selection = input("Enter your selection: ")
-
-        validated_selection = validate_selection(login_selection, list(range(1, 3)))
-
-        if validated_selection == 1:
-            create_account()
-            break
-        elif validated_selection == 2:
-            display_welcome_banner()
-            break
+    select_from_avail_options(create_account, "Create another account")
 
 
 def reset_password():
@@ -307,31 +268,11 @@ def reset_password():
         )
 
     # Return to login menu or try again
-    while True:
-        print_center_string(
-            colored(
-                "Please select option (1 or 2) from the list shown and enter it below\n",
-                attrs=["bold", "underline"],
-            )
-        )
-
-        print("1. Reset password again")
-        print("2. Return to home page\n")
-
-        login_selection = input("Enter your selection: ")
-
-        validated_selection = validate_selection(login_selection, list(range(1, 3)))
-
-        if validated_selection == 1:
-            reset_password()
-            break
-        elif validated_selection == 2:
-            display_welcome_banner()
-            break
+    select_from_avail_options(reset_password, "Reset password again")
 
 
 def main_menu():
-    pass
+    print("main menu")
 
 
 # ----------------------- HELPER FUNCTIONS ------------------------
@@ -436,6 +377,38 @@ def hash_password(password):
     hashed_pass = str(hashed_pass)
 
     return hashed_pass
+
+
+def select_from_avail_options(function_to_call, option_text):
+    """
+    Used to display a list of options to the user and allow them to make a selection
+
+    Parameters:
+        function_to_call (func): Function to be called if option 1 is selected
+    Returns:
+        option_text (string): Text to be shown for option 1
+    """
+    while True:
+        print_center_string(
+            colored(
+                "Please select option (1 or 2) from the list shown and enter it below\n",
+                attrs=["bold", "underline"],
+            )
+        )
+
+        print("1. " + option_text)
+        print("2. Return to home page\n")
+
+        selection = input("Enter your selection: ")
+
+        validated_selection = validate_selection(selection, list(range(1, 3)))
+
+        if validated_selection == 1:
+            function_to_call()
+            break
+        elif validated_selection == 2:
+            display_welcome_banner()
+            break
 
 
 # ----------------------- GSHEETS FUNCTIONS -----------------------
