@@ -14,6 +14,8 @@ from termcolor import colored
 # Allows access to functions to work with regular expressions
 import re
 
+# Used to hash passwords
+import bcrypt
 
 # ---------------------------- API SETUP ------------------------------
 
@@ -139,17 +141,19 @@ def create_account():
         )
     )
 
+    # get new user details
     username = get_valid_username()
     print_center_string(colored("Username available\n", "green"))
 
-    password = get_valid_password()
+    password_and_salt = get_valid_password()
+    hashed_password, salt = password_and_salt
 
     phone_num = get_valid_phone_num()
 
     print_center_string(colored("Creating Account ....\n", "green"))
 
     # Store user account details
-    account_details = [username, password, phone_num]
+    account_details = [username, hashed_password, salt, phone_num]
     login_worksheet = SHEET.worksheet("login")
     login_worksheet.append_row(account_details)
 
@@ -252,11 +256,30 @@ def check_phone_num_taken(phone_num):
         True or False (boolean): True if username foun, false otherwise
     """
     login_worksheet = SHEET.worksheet("login")
-    phone_num_found = login_worksheet.find(phone_num, in_column=3)
+    phone_num_found = login_worksheet.find(phone_num, in_column=4)
     if phone_num_found:
         return True
     else:
         return False
+
+
+def hash_password(password):
+    """
+    Hashes given password using a generated salt
+
+    Parameters:
+        password (string): Password to be hashed
+    Returns:
+        password_and_salt (tuple): Tuple containing the hashed password and salt used
+    """
+    salt = bcrypt.gensalt()
+    hashed_pass = bcrypt.hashpw(password.encode(), salt)
+
+    # retured as strings for storage in gsheets
+    hashed_pass = str(hashed_pass)
+    salt = str(salt)
+
+    return (hashed_pass, salt)
 
 
 # ----------------------- GSHEETS FUNCTIONS -----------------------
@@ -268,8 +291,6 @@ def increment_gsheet_column_value(column):
     Pass in A returns B
     Pass in Z returns AA
     Pass in GZ returns HA etc.
-
-
 
     Parameters:
         column (string): Column to be incremented
@@ -342,6 +363,16 @@ def validate_selection(selection_str, available_choices):
 
 
 def get_valid_username():
+    """
+    Gets a valid username from the user
+    Username can be between 5-15 chars long and include _ or -
+
+    Parameters:
+        None:
+    Returns:
+        username (string): Validated username chosen by user
+
+    """
     while True:
         try:
             username = input(
@@ -369,6 +400,15 @@ def get_valid_username():
 
 
 def get_valid_password():
+    """
+    Gets a valid password from user
+    Password can be between 5 and 15 chars and use  _ , - , & or !
+    Hashes password via call to external function
+
+    Parameters:
+        None:
+    Returns:
+        password_and_salt (tuple): Validated, Hashed password and salt used"""
     while True:
         try:
             password = input(
@@ -384,7 +424,9 @@ def get_valid_password():
             if not re.match("^[a-zA-Z0-9_&!-]*$", password):
                 raise ValueError("Please only use letters, numbers, _ , - , & or !")
 
-            return password
+            password_and_salt = hash_password(password)
+
+            return password_and_salt
 
         except ValueError as e:
             print("")
@@ -394,6 +436,15 @@ def get_valid_password():
 
 
 def get_valid_phone_num():
+    """
+    Gets a valid phone number from user
+    Phone number can be between 10 and 15 digits
+
+    Parameters:
+        None:
+    Returns:
+        phone_num (string): Validated phone number chosen by user
+    """
     while True:
         try:
             phone_num = input(
@@ -431,4 +482,6 @@ def main():
     display_welcome_banner()
 
 
-main()
+# Ensures main is only excuted when the script is directly run
+if __name__ == "__main__":
+    main()
