@@ -87,10 +87,37 @@ class User:
             card_num_selection = input(
                 "\nEnter the card number (1-102) that you would like to add: \n"
             )
+
             if validate_selection(card_num_selection, list(range(1, 103))):
                 break
 
         # check if card is card is in collection, if not add it
+        bss_worksheet = SHEET.worksheet("base_set_shadowless")
+
+        if (
+            bss_worksheet.cell(str(int(card_num_selection) + 1), self.col_number).value
+            == "Yes"
+        ):
+            print_center_string(
+                colored(
+                    f"This card is already in your collection\n",
+                    "red",
+                    attrs=["bold", "underline"],
+                )
+            )
+
+        else:
+            bss_worksheet.update_cell(
+                str(int(card_num_selection) + 1), self.col_number, "Yes"
+            )
+            print_center_string(
+                colored(
+                    f"You have successfully added card {card_num_selection}\n",
+                    "green",
+                    attrs=["bold", "underline"],
+                )
+            )
+            print_pokemon(card_num_selection)
 
     def remove_card(self):
         """
@@ -299,19 +326,25 @@ def account_login():
             bss_worksheet = SHEET.worksheet("base_set_shadowless")
             username_found_bss = bss_worksheet.find(username, in_row=1)
             user_col_num = username_found_bss.col
-            print(user_col_num)
             human_user = User(user_col_num)
             main_menu(human_user)
         else:
             print_center_string(colored("Login failed, password incorrect\n", "red"))
-            select_from_avail_options(account_login, "Try again")
+            select_from_avail_options(
+                account_login,
+                "Try again",
+                display_welcome_banner,
+                "Return to home page",
+            )
 
     else:
         print_center_string(
             colored("The username entered is not associated with an account\n", "red")
         )
 
-        select_from_avail_options(account_login, "Try again")
+        select_from_avail_options(
+            account_login, "Try again", display_welcome_banner, "Return to home page"
+        )
 
 
 def create_account():
@@ -371,7 +404,12 @@ def create_account():
         colored("Account created successfully\n", "green", attrs=["bold", "underline"])
     )
 
-    select_from_avail_options(create_account, "Create another account")
+    select_from_avail_options(
+        create_account,
+        "Create another account",
+        display_welcome_banner,
+        "Return to home page",
+    )
 
 
 def reset_password():
@@ -427,7 +465,12 @@ def reset_password():
         )
 
     # Return to login menu or try again
-    select_from_avail_options(reset_password, "Reset password again")
+    select_from_avail_options(
+        reset_password,
+        "Reset password again",
+        display_welcome_banner,
+        "Return to home page",
+    )
 
 
 def main_menu(human_user):
@@ -443,7 +486,7 @@ def main_menu(human_user):
     # print(human_user.col_number)
     clear_terminal()
     print_art_font("                Main  Menu")
-    print_pokemon("charizard")
+    print_pokemon("4")
 
     print_center_string(
         colored(
@@ -587,14 +630,18 @@ def hash_password(password):
     return hashed_pass
 
 
-def select_from_avail_options(function_to_call, option_text):
+def select_from_avail_options(
+    function1_to_call, function1_text, function2_to_call, function2_text
+):
     """
     Used to display a list of options to the user and allow them to make a selection
 
     Parameters:
-        function_to_call (func): Function to be called if option 1 is selected
+        function1_to_call (func): Function to be called if option 1 is selected
+        function2_to_call (func): Function to be called if option 2 is selected
     Returns:
-        option_text (string): Text to be shown for option 1
+        function1_text (string): Text to be shown for option 1
+        function2_text (string): Text to be shown for option 2
     """
     while True:
         print_center_string(
@@ -604,18 +651,18 @@ def select_from_avail_options(function_to_call, option_text):
             )
         )
 
-        print("1. " + option_text)
-        print("2. Return to home page\n")
+        print("1. " + function1_text)
+        print("2. " + function2_text + "\n")
 
         selection = input("Enter your selection: \n")
 
         validated_selection = validate_selection(selection, list(range(1, 3)))
 
         if validated_selection == 1:
-            function_to_call()
+            function1_to_call()
             break
         elif validated_selection == 2:
-            display_welcome_banner()
+            function2_to_call()
             break
 
 
