@@ -51,7 +51,132 @@ SHEET = GSPREAD_CLIENT.open("pokemon_portfolio")
 # data = login.get_all_values()
 # print(data)
 
+
 # --------------------------- CLASSES -----------------------------
+class User:
+    """
+    A class representing a human user
+
+    Attributes:
+        user_col_number (int): Value representing column in google spreadsheet that stores uses card collection
+    """
+
+    def __init__(self, col_number):
+        self.col_number = col_number
+
+    def add_card(self, card_num):
+        """
+
+
+        Parameters:
+            None
+        Returns:
+            None
+        """
+
+        clear_terminal()
+        print_art_font("            Add  card")
+        print("\n\n\n")
+        print_center_string(
+            colored(
+                "Please follow the steps below to add a card to your portfolio\n",
+                attrs=["bold", "underline"],
+            )
+        )
+
+    def remove_card(self, card_num):
+        """
+
+
+        Parameters:
+            None
+        Returns:
+            None
+        """
+
+        clear_terminal()
+        print_art_font("         Remove  Card")
+        print("\n\n\n")
+        print_center_string(
+            colored(
+                "Please follow the steps below to remove a card to your portfolio\n",
+                attrs=["bold", "underline"],
+            )
+        )
+
+    def view_portfolio(self):
+        """
+
+
+        Parameters:
+            None
+        Returns:
+            None
+        """
+
+        clear_terminal()
+        print_art_font("      Your  portfolio")
+        print("\n\n\n")
+
+    def view_cards_needed(self):
+        """
+
+
+        Parameters:
+            None
+        Returns:
+            None
+        """
+
+        clear_terminal()
+        print_art_font("        Cards  Needed")
+        print("\n\n\n")
+        print_center_string(
+            colored(
+                "Below is the list of cards required to complete your collection\n",
+                attrs=["bold", "underline"],
+            )
+        )
+
+    def appraise_collection(self):
+        """
+
+
+        Parameters:
+            None
+        Returns:
+            None
+        """
+
+        clear_terminal()
+        print_art_font(" Portfolio  Appraisal")
+        print("\n\n\n")
+        print_center_string(
+            colored(
+                "Please see you current portfolio value below\n",
+                attrs=["bold", "underline"],
+            )
+        )
+
+    def delete_portfolio(self):
+        """
+
+
+        Parameters:
+            None
+        Returns:
+            None
+        """
+
+        clear_terminal()
+        print_art_font("    Delete  Portfolio")
+        print("\n\n\n")
+        print_center_string(
+            colored(
+                "Please follow the steps below to remove all cards from your portfolio\n",
+                attrs=["bold", "underline"],
+            )
+        )
 
 
 # --------------------- APP LOGIC FUNCTIONS -----------------------
@@ -153,8 +278,14 @@ def account_login():
 
         if bcrypt.checkpw(password_attempt_bytes, stored_hashed_pass):
             print_center_string(colored("Login Successful\n", "green"))
-            # return true to main menu from this call and then call main menu and create use object
-            main_menu()
+
+            # get the users col number and create a user using this value
+            bss_worksheet = SHEET.worksheet("base_set_shadowless")
+            username_found_bss = bss_worksheet.find(username, in_row=1)
+            user_col_num = username_found_bss.col
+            print(user_col_num)
+            human_user = User(user_col_num)
+            main_menu(human_user)
         else:
             print_center_string(colored("Login failed, password incorrect\n", "red"))
             select_from_avail_options(account_login, "Try again")
@@ -223,6 +354,11 @@ def create_account():
 def reset_password():
     """
     Allows user to reset password
+
+    Parameters:
+        None
+    Returns:
+        None
     """
     clear_terminal()
 
@@ -271,8 +407,18 @@ def reset_password():
     select_from_avail_options(reset_password, "Reset password again")
 
 
-def main_menu():
-    print("main menu")
+def main_menu(human_user):
+    """
+    Displays a main menu to a user allowing them to select options
+
+    Parameters:
+        human_user (object of User class): The current user that is using the app
+    Returns:
+        None
+    """
+    # print("main menu")
+    # print(human_user.col_number)
+    pass
 
 
 # ----------------------- HELPER FUNCTIONS ------------------------
