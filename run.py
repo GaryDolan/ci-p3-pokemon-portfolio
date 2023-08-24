@@ -64,7 +64,7 @@ class User:
     def __init__(self, col_number):
         self.col_number = col_number
 
-    def add_card(self, card_num):
+    def add_card(self):
         """
 
 
@@ -75,7 +75,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("            Add  card")
+        print_art_font("               Add  a  card")
         print("\n\n\n")
         print_center_string(
             colored(
@@ -83,8 +83,15 @@ class User:
                 attrs=["bold", "underline"],
             )
         )
+        while True:
+            card_num_selection = input(
+                "\nEnter the card number (1-102) that you would like to add: \n"
+            )
+            if validate_selection(card_num_selection, list(range(1, 103))):
+                break
+        print(card_num_selection)
 
-    def remove_card(self, card_num):
+    def remove_card(self):
         """
 
 
@@ -95,7 +102,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("         Remove  Card")
+        print_art_font("       Remove  a  Card")
         print("\n\n\n")
         print_center_string(
             colored(
@@ -103,6 +110,13 @@ class User:
                 attrs=["bold", "underline"],
             )
         )
+        while True:
+            card_num_selection = input(
+                "Enter the card number (1-102) that you would like to remove: \n"
+            )
+            if validate_selection(card_num_selection, list(range(1, 103))):
+                break
+        print(card_num_selection)
 
     def view_portfolio(self):
         """
@@ -115,7 +129,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("      Your  portfolio")
+        print_art_font("       Your  portfolio")
         print("\n\n\n")
 
     def view_cards_needed(self):
@@ -129,7 +143,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("        Cards  Needed")
+        print_art_font("         Cards  Needed")
         print("\n\n\n")
         print_center_string(
             colored(
@@ -138,7 +152,7 @@ class User:
             )
         )
 
-    def appraise_collection(self):
+    def appraise_portfolio(self):
         """
 
 
@@ -149,7 +163,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font(" Portfolio  Appraisal")
+        print_art_font("Portfolio Appraisal")
         print("\n\n\n")
         print_center_string(
             colored(
@@ -222,7 +236,7 @@ def login_options():
         print("2. Create an account")
         print("3. Password reset\n")
 
-        login_selection = input("Enter your selection: ")
+        login_selection = input("Enter your selection: \n")
 
         validated_selection = validate_selection(login_selection, list(range(1, 4)))
 
@@ -418,7 +432,46 @@ def main_menu(human_user):
     """
     # print("main menu")
     # print(human_user.col_number)
-    pass
+    clear_terminal()
+    print_art_font("                Main  Menu")
+    print_pokemon("charizard")
+
+    print_center_string(
+        colored(
+            "Please select an option (1-6) from the list shown and enter it below\n",
+            attrs=["bold", "underline"],
+        )
+    )
+    while True:
+        print("1. Add a card to your portfolio")
+        print("2. Remove a card from your portfolio")
+        print("3. View portfolio")
+        print("4. View cards needed to complete collection")
+        print("5. Appraise portfolio")
+        print("6. Delete portfolio\n")
+
+        menu_selection = input("Enter your selection: \n")
+
+        validated_selection = validate_selection(menu_selection, list(range(1, 7)))
+
+        if validated_selection == 1:
+            human_user.add_card()
+            break
+        elif validated_selection == 2:
+            human_user.remove_card()
+            break
+        elif validated_selection == 3:
+            human_user.view_portfolio()
+            break
+        elif validated_selection == 4:
+            human_user.view_cards_needed()
+            break
+        elif validated_selection == 5:
+            human_user.appraise_portfolio()
+            break
+        elif validated_selection == 6:
+            human_user.delete_portfolio()
+            break
 
 
 # ----------------------- HELPER FUNCTIONS ------------------------
@@ -545,7 +598,7 @@ def select_from_avail_options(function_to_call, option_text):
         print("1. " + option_text)
         print("2. Return to home page\n")
 
-        selection = input("Enter your selection: ")
+        selection = input("Enter your selection: \n")
 
         validated_selection = validate_selection(selection, list(range(1, 3)))
 
@@ -651,7 +704,7 @@ def get_valid_username(check_for_match=True):
     while True:
         try:
             username = input(
-                "\nPlease enter username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : "
+                "\nPlease enter username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : \n"
             )
 
             if len(username) < 5:
@@ -688,7 +741,7 @@ def get_valid_password(hash_pass=True):
     while True:
         try:
             password = input(
-                "\nPlease enter a password between 5 and 15 characters long,\n(You may user letters, numbers, _ , - , & or !) : "
+                "\nPlease enter a password between 5 and 15 characters long,\n(You may user letters, numbers, _ , - , & or !) : \n"
             )
 
             if len(password) < 5:
@@ -726,7 +779,7 @@ def get_valid_phone_num(check_for_match=True):
     while True:
         try:
             phone_num = input(
-                "\nPlease enter your mobile phone number consisting of 10 to 15 digits: "
+                "\nPlease enter your mobile phone number consisting of 10 to 15 digits: \n"
             )
 
             if len(phone_num) < 10:
