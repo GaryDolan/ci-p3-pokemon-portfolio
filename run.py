@@ -55,13 +55,19 @@ SHEET = GSPREAD_CLIENT.open("pokemon_portfolio")
 # --------------------------- CLASSES -----------------------------
 class User:
     """
-    A class representing a human user
+    A class representing a human user.
 
     Attributes:
         user_col_number (int): Value representing column in google spreadsheet that stores uses card collection
     """
 
     def __init__(self, col_number):
+        """
+        Initialise an instance of the User class.
+
+        Parameters:
+            col_number (string): Represents the column number in the google sheet that store users cards
+        """
         self.col_number = col_number
 
     def add_card(self):
@@ -69,7 +75,7 @@ class User:
         Allows a user to add a card to their collection based on the card number 
 
         Parameters:
-            None
+            self (object): An instance of the User class 
         Returns:
             None
         """
@@ -82,33 +88,35 @@ class User:
         while True:
             card_num_selection = input("\nEnter the card number (1-102) that you would like to add: \n")
 
-            if validate_selection(card_num_selection, list(range(1, 103))):
+            validated_card_num = validate_selection(card_num_selection, list(range(1, 103)))
+           
+            if (validated_card_num):
                 break
 
-        # Check if card is card is in collection (== "Yes"), if not (=="No") add it
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
+        # Set card row adding 1 to account for headings
+        card_row = str(validated_card_num + 1)
 
-        #set card row adding 1 to account for headings
-        card_row = str(int(card_num_selection) + 1)
-
-        if (bss_worksheet.cell(card_row, self.col_number).value == "Yes"):
-            print_center_string(colored(f"This card is already in your collection\n", "red", attrs=["bold", "underline"]))
-            select_avail_user_option(self.add_card, "Add another card")
-        else:
+        # Check if card is not in collection (== "No") and ad it 
+        if (bss_worksheet.cell(card_row, self.col_number).value == "No"):
             bss_worksheet.update_cell(card_row, self.col_number, "Yes") 
 
             cardname = bss_worksheet.cell(card_row, 2).value
-            print_center_string(colored(f"You have successfully added {cardname}, card {card_num_selection}.\n", "green", attrs=["bold", "underline"]))
-            print_pokemon(card_num_selection)
+            print_center_string(colored(f"You have successfully added {cardname}, card {validated_card_num}.\n", "green", attrs=["bold", "underline"]))
+            print_pokemon(str(validated_card_num))
 
+            select_avail_user_option(self.add_card, "Add another card")
+            
+        else:
+            print_center_string(colored(f"This card is already in your collection\n", "red", attrs=["bold", "underline"]))
             select_avail_user_option(self.add_card, "Add another card")
 
     def remove_card(self):
         """
-
+        Allows a user to remove a card from their collection based on the card number 
 
         Parameters:
-            None
+            self (object): An instance of the User class 
         Returns:
             None
         """
@@ -117,18 +125,33 @@ class User:
         print_art_font("       Remove  a  Card")
         print("\n\n\n")
         print_center_string(
-            colored(
-                "Please follow the steps below to remove a card to your portfolio\n",
-                attrs=["bold", "underline"],
-            )
-        )
+            colored("Please follow the steps below to remove a card to your portfolio\n",  attrs=["bold", "underline"])
+)
         while True:
-            card_num_selection = input(
-                "Enter the card number (1-102) that you would like to remove: \n"
-            )
-            if validate_selection(card_num_selection, list(range(1, 103))):
+            card_num_selection = input("\nEnter the card number (1-102) that you would like to remove: \n")
+
+            validated_card_num = validate_selection(card_num_selection, list(range(1, 103)))
+            if (validated_card_num):
                 break
-        # check if card is card is in collection, if it is, remove it
+
+        
+        bss_worksheet = SHEET.worksheet("base_set_shadowless")
+        # set card row adding 1 to account for headings
+        card_row = str(validated_card_num + 1)
+
+        # Check if card is card is in collection (== "Yes") and remove it
+        if (bss_worksheet.cell(card_row, self.col_number).value == "Yes"):
+            bss_worksheet.update_cell(card_row, self.col_number, "No") 
+
+            cardname = bss_worksheet.cell(card_row, 2).value
+            print_center_string(colored(f"You have successfully removed {cardname}, card {validated_card_num}.\n", "green", attrs=["bold", "underline"]))
+            print_pokemon(str(validated_card_num))
+
+            select_avail_user_option(self.remove_card, "remove another card")
+            
+        else:
+            print_center_string(colored(f"You do not have this card in your collection\n", "red", attrs=["bold", "underline"]))
+            select_avail_user_option(self.remove_card, "Remove another card")
 
     def view_portfolio(self):
         """
