@@ -89,7 +89,8 @@ class User:
             )
             if validate_selection(card_num_selection, list(range(1, 103))):
                 break
-        print(card_num_selection)
+
+        # check if card is card is in collection, if not add it
 
     def remove_card(self):
         """
@@ -116,7 +117,7 @@ class User:
             )
             if validate_selection(card_num_selection, list(range(1, 103))):
                 break
-        print(card_num_selection)
+        # check if card is card is in collection, if it is, remove it
 
     def view_portfolio(self):
         """
@@ -183,7 +184,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("    Delete  Portfolio")
+        print_art_font("      Delete  Portfolio")
         print("\n\n\n")
         print_center_string(
             colored(
@@ -290,6 +291,7 @@ def account_login():
         stored_hashed_pass = stored_hashed_pass[2:-1].encode("utf-8")
         password_attempt_bytes = password_attempt.encode()
 
+        # check if password entered matches
         if bcrypt.checkpw(password_attempt_bytes, stored_hashed_pass):
             print_center_string(colored("Login Successful\n", "green"))
 
@@ -349,15 +351,22 @@ def create_account():
     login_worksheet = SHEET.worksheet("login")
     login_worksheet.append_row(account_details)
 
-    # Assign the user the next available column in base_set_shadowless sheet and add his username to column
+    # Assign the user the next available column in base_set_shadowless sheet and add his username
     bss_worksheet = SHEET.worksheet("base_set_shadowless")
     next_avail_column = bss_worksheet.acell("A2").value
     bss_worksheet.update_acell(next_avail_column + "1", username)
+
+    # add empty collection ("No's")
+    update_values = [["No"] for i in range(102)]
+    range_to_update = f"{next_avail_column}2:{next_avail_column}103"
+
+    bss_worksheet.update(range_to_update, update_values)
 
     # Increment the next_avail_column stored in gsheets, and add a new column to ensure were always ready and hava a column for next account creation
     bss_worksheet.update_acell("A2", increment_gsheet_column_value(next_avail_column))
     add_column_to_sheet("base_set_shadowless")
 
+    clear_terminal()
     print_center_string(
         colored("Account created successfully\n", "green", attrs=["bold", "underline"])
     )
