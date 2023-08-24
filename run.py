@@ -66,7 +66,7 @@ class User:
 
     def add_card(self):
         """
-
+        Allows a user to add a card to their collection based on the card number 
 
         Parameters:
             None
@@ -77,47 +77,31 @@ class User:
         clear_terminal()
         print_art_font("               Add  a  card")
         print("\n\n\n")
-        print_center_string(
-            colored(
-                "Please follow the steps below to add a card to your portfolio\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_center_string(colored("Please follow the steps below to add a card to your portfolio\n", attrs=["bold", "underline"]))
+        # Get card number from user and validate
         while True:
-            card_num_selection = input(
-                "\nEnter the card number (1-102) that you would like to add: \n"
-            )
+            card_num_selection = input("\nEnter the card number (1-102) that you would like to add: \n")
 
             if validate_selection(card_num_selection, list(range(1, 103))):
                 break
 
-        # check if card is card is in collection, if not add it
+        # Check if card is card is in collection (== "Yes"), if not (=="No") add it
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
 
-        if (
-            bss_worksheet.cell(str(int(card_num_selection) + 1), self.col_number).value
-            == "Yes"
-        ):
-            print_center_string(
-                colored(
-                    f"This card is already in your collection\n",
-                    "red",
-                    attrs=["bold", "underline"],
-                )
-            )
+        #set card row adding 1 to account for headings
+        card_row = str(int(card_num_selection) + 1)
 
+        if (bss_worksheet.cell(card_row, self.col_number).value == "Yes"):
+            print_center_string(colored(f"This card is already in your collection\n", "red", attrs=["bold", "underline"]))
+            select_avail_user_option(self.add_card, "Add another card")
         else:
-            bss_worksheet.update_cell(
-                str(int(card_num_selection) + 1), self.col_number, "Yes"
-            )
-            print_center_string(
-                colored(
-                    f"You have successfully added card {card_num_selection}\n",
-                    "green",
-                    attrs=["bold", "underline"],
-                )
-            )
+            bss_worksheet.update_cell(card_row, self.col_number, "Yes") 
+
+            cardname = bss_worksheet.cell(card_row, 2).value
+            print_center_string(colored(f"You have successfully added {cardname}, card {card_num_selection}.\n", "green", attrs=["bold", "underline"]))
             print_pokemon(card_num_selection)
+
+            select_avail_user_option(self.add_card, "Add another card")
 
     def remove_card(self):
         """
@@ -221,6 +205,34 @@ class User:
         )
 
 
+def select_avail_user_option(function_to_call, function_text):
+    """
+    Used to display a list of options to the user and allow them to make a selection
+
+    Parameters:
+        function_to_call (func): Function to be called if option 1 is selected
+    Returns:
+        function_text (string): Text to be shown for option 1
+
+    """
+    while True:
+        print_center_string(colored("Please select option (1 or 2) from the list shown and enter it below\n", attrs=["bold", "underline"], ))
+
+        print("1. " + function_text)
+        print("2. Return to main menu\n")
+
+        selection = input("Enter your selection: \n")
+
+        validated_selection = validate_selection(selection, list(range(1, 3)))
+
+        if validated_selection == 1:
+            function_to_call()
+            break
+        elif validated_selection == 2:
+            # just break, as this will return the user to main menu 
+            break
+
+
 # --------------------- APP LOGIC FUNCTIONS -----------------------
 
 
@@ -253,12 +265,7 @@ def login_options():
         None
     """
     while True:
-        print_center_string(
-            colored(
-                "Please select an option (1-3) from the list shown and enter it below\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_center_string(colored("Please select an option (1-3) from the list shown and enter it below\n", attrs=["bold", "underline"]))
 
         print("1. Log into your account")
         print("2. Create an account")
@@ -294,12 +301,7 @@ def account_login():
     print_art_font("       Account  Login")
 
     print("\n\n\n")
-    print_center_string(
-        colored(
-            "Please enter your username and password below to login (both are case sensitive)\n",
-            attrs=["bold", "underline"],
-        )
-    )
+    print_center_string(colored("Please enter your username and password below to login (both are case sensitive)\n", attrs=["bold", "underline"]))
 
     username = get_valid_username(False)
 
@@ -330,21 +332,12 @@ def account_login():
             main_menu(human_user)
         else:
             print_center_string(colored("Login failed, password incorrect\n", "red"))
-            select_from_avail_options(
-                account_login,
-                "Try again",
-                display_welcome_banner,
-                "Return to home page",
-            )
+            select_from_avail_options(account_login, "Try again")
 
     else:
-        print_center_string(
-            colored("The username entered is not associated with an account\n", "red")
-        )
+        print_center_string(colored("The username entered is not associated with an account\n", "red"))
 
-        select_from_avail_options(
-            account_login, "Try again", display_welcome_banner, "Return to home page"
-        )
+        select_from_avail_options(account_login, "Try again")
 
 
 def create_account():
@@ -364,12 +357,7 @@ def create_account():
     print_art_font(" Account Creation")
 
     print("\n\n\n")
-    print_center_string(
-        colored(
-            "Please follow the steps below to create an account\n",
-            attrs=["bold", "underline"],
-        )
-    )
+    print_center_string(colored("Please follow the steps below to create an account\n", attrs=["bold", "underline"]))
 
     # get new user details
     username = get_valid_username()
@@ -400,16 +388,9 @@ def create_account():
     add_column_to_sheet("base_set_shadowless")
 
     clear_terminal()
-    print_center_string(
-        colored("Account created successfully\n", "green", attrs=["bold", "underline"])
-    )
+    print_center_string(colored("Account created successfully\n", "green", attrs=["bold", "underline"]))
 
-    select_from_avail_options(
-        create_account,
-        "Create another account",
-        display_welcome_banner,
-        "Return to home page",
-    )
+    select_from_avail_options(create_account, "Create another account")
 
 
 def reset_password():
@@ -426,12 +407,7 @@ def reset_password():
     print_art_font("      Password  Reset")
 
     print("\n\n\n")
-    print_center_string(
-        colored(
-            "Please follow the steps below to reset your password\n",
-            attrs=["bold", "underline"],
-        )
-    )
+    print_center_string(colored("Please follow the steps below to reset your password\n", attrs=["bold", "underline"]))
 
     phone_num = get_valid_phone_num(False)
 
@@ -444,9 +420,7 @@ def reset_password():
         row_num = phone_num_found.row
         username = login_worksheet.cell(row_num, 1).value
 
-        print_center_string(
-            colored(f"Account found, username is {username}\n", "green")
-        )
+        print_center_string(colored(f"Account found, username is {username}\n", "green"))
 
         # Get and store new password
         hashed_password = get_valid_password()
@@ -458,19 +432,10 @@ def reset_password():
         print_center_string(colored("Password has been reset\n", "green"))
 
     else:
-        print_center_string(
-            colored(
-                "The phone number entered is not associated with an acconut\n", "red"
-            )
-        )
+        print_center_string(colored("The phone number entered is not associated with an acconut\n", "red"))
 
     # Return to login menu or try again
-    select_from_avail_options(
-        reset_password,
-        "Reset password again",
-        display_welcome_banner,
-        "Return to home page",
-    )
+    select_from_avail_options(reset_password, "Reset password again")
 
 
 def main_menu(human_user):
@@ -482,19 +447,14 @@ def main_menu(human_user):
     Returns:
         None
     """
-    # print("main menu")
-    # print(human_user.col_number)
-    clear_terminal()
-    print_art_font("                Main  Menu")
-    print_pokemon("4")
-
-    print_center_string(
-        colored(
-            "Please select an option (1-6) from the list shown and enter it below\n",
-            attrs=["bold", "underline"],
-        )
-    )
     while True:
+        clear_terminal()
+        print_art_font("                Main  Menu")
+        print_pokemon("4")
+
+        print_center_string(colored("Please select an option (1-6) from the list shown and enter it below\n", attrs=["bold", "underline"]))
+
+    
         print("1. Add a card to your portfolio")
         print("2. Remove a card from your portfolio")
         print("3. View portfolio")
@@ -508,22 +468,21 @@ def main_menu(human_user):
 
         if validated_selection == 1:
             human_user.add_card()
-            break
+
         elif validated_selection == 2:
             human_user.remove_card()
-            break
+
         elif validated_selection == 3:
             human_user.view_portfolio()
-            break
+
         elif validated_selection == 4:
             human_user.view_cards_needed()
-            break
+
         elif validated_selection == 5:
             human_user.appraise_portfolio()
-            break
+
         elif validated_selection == 6:
             human_user.delete_portfolio()
-            break
 
 
 # ----------------------- HELPER FUNCTIONS ------------------------
@@ -630,39 +589,31 @@ def hash_password(password):
     return hashed_pass
 
 
-def select_from_avail_options(
-    function1_to_call, function1_text, function2_to_call, function2_text
-):
+def select_from_avail_options(function_to_call, function_text):
     """
     Used to display a list of options to the user and allow them to make a selection
 
     Parameters:
-        function1_to_call (func): Function to be called if option 1 is selected
-        function2_to_call (func): Function to be called if option 2 is selected
+        function_to_call (func): Function to be called if option 1 is selected
     Returns:
-        function1_text (string): Text to be shown for option 1
-        function2_text (string): Text to be shown for option 2
+        function_text (string): Text to be shown for option 1
+
     """
     while True:
-        print_center_string(
-            colored(
-                "Please select option (1 or 2) from the list shown and enter it below\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_center_string(colored("Please select option (1 or 2) from the list shown and enter it below\n", attrs=["bold", "underline"]))
 
-        print("1. " + function1_text)
-        print("2. " + function2_text + "\n")
+        print("1. " + function_text)
+        print("2. Return to home page\n")
 
         selection = input("Enter your selection: \n")
 
         validated_selection = validate_selection(selection, list(range(1, 3)))
 
         if validated_selection == 1:
-            function1_to_call()
+            function_to_call()
             break
         elif validated_selection == 2:
-            function2_to_call()
+            display_welcome_banner()
             break
 
 
@@ -734,14 +685,10 @@ def validate_selection(selection_str, available_choices):
     try:
         selection_value = int(selection_str)
         if selection_value not in available_choices:
-            raise ValueError(
-                f"Available options ({available_choices[0]} - {available_choices[-1]}), you entered {selection_value}"
-            )
+            raise ValueError(f"Available options ({available_choices[0]} - {available_choices[-1]}), you entered {selection_value}")
     except ValueError as e:
         print()
-        print_center_string(
-            colored(f"Invalid selection: {e}, please try again\n", "red")
-        )
+        print_center_string(colored(f"Invalid selection: {e}, please try again\n", "red"))
         return False
     return selection_value
 
@@ -759,9 +706,7 @@ def get_valid_username(check_for_match=True):
     """
     while True:
         try:
-            username = input(
-                "\nPlease enter username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : \n"
-            )
+            username = input("\nPlease enter username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : \n")
 
             if len(username) < 5:
                 raise ValueError("Username must be at least 5 characters")
@@ -796,9 +741,7 @@ def get_valid_password(hash_pass=True):
         password (string): Validated, Hashed password"""
     while True:
         try:
-            password = input(
-                "\nPlease enter a password between 5 and 15 characters long,\n(You may user letters, numbers, _ , - , & or !) : \n"
-            )
+            password = input("\nPlease enter a password between 5 and 15 characters long,\n(You may user letters, numbers, _ , - , & or !) : \n")
 
             if len(password) < 5:
                 raise ValueError("Password must be at least 5 characters")
@@ -834,9 +777,7 @@ def get_valid_phone_num(check_for_match=True):
     """
     while True:
         try:
-            phone_num = input(
-                "\nPlease enter your mobile phone number consisting of 10 to 15 digits: \n"
-            )
+            phone_num = input("\nPlease enter your mobile phone number consisting of 10 to 15 digits: \n")
 
             if len(phone_num) < 10:
                 raise ValueError("Phone number must be at least 10 digits")
@@ -855,9 +796,7 @@ def get_valid_phone_num(check_for_match=True):
 
         except ValueError as e:
             print("")
-            print_center_string(
-                colored(f"Invalid phone number: {e}, please try again\n", "red")
-            )
+            print_center_string(colored(f"Invalid phone number: {e}, please try again\n", "red"))
 
 
 # ----------------------------- MAIN -------------------------------
