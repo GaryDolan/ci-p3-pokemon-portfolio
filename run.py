@@ -17,6 +17,9 @@ import re
 # Used to hash passwords
 import bcrypt
 
+# Display data in table format
+from tabulate import tabulate
+
 # ---------------------------- API SETUP ------------------------------
 
 # Import the entire gspread library -
@@ -155,17 +158,55 @@ class User:
 
     def view_portfolio(self):
         """
-
+        Allows a user to view their portfolio 
 
         Parameters:
-            None
+            self (object): An instance of the User class 
         Returns:
             None
         """
 
         clear_terminal()
-        print_art_font("       Your  portfolio")
-        print("\n\n\n")
+        print_art_font("       Your  Portfolio")
+ 
+        bss_worksheet = SHEET.worksheet("base_set_shadowless")
+
+        # Get pokemon card names, numbers and user cards (Yes/No's to indicate which cards are in their collection)
+        card_names = bss_worksheet.col_values(2)[1:]
+        user_cards = bss_worksheet.col_values(self.col_number)[1:]
+        card_nums = bss_worksheet.col_values(4)[1:]
+        
+        # Generate a list of pokemon cards in the users collection 
+        user_collection = []
+        for card, card_num, name in zip(user_cards, card_nums, card_names):
+            if (card == "Yes"):
+                card_string = f"BS{card_num}: {name}"
+                user_collection.append(card_string)
+
+        # Check if we have cards to diaplay 
+        num_card_collected = len(user_collection)
+        if (num_card_collected > 0):
+
+            # Structure list of cards for display in 3 columns 
+            user_coll_columns = []
+            num_cols = 3
+            for i in range(0, len(user_collection), num_cols):
+                column = user_collection[i: i + num_cols]
+                user_coll_columns.append(column)
+
+            print(tabulate(user_coll_columns, tablefmt = "fancy_grid"))
+
+            #check how many cards we show and display % complete
+            percentage = round((num_card_collected/len(card_nums) *100))
+            if (percentage == 100):
+                print_center_string(colored(f"Congratulation your set is {percentage}% complete\n", "green", attrs=["bold", "underline"]))
+            else:
+                print_center_string(colored(f"You have collected {percentage}%, of available cards in this set\n", "green", attrs=["bold", "underline"]))
+
+        else:
+            print_center_string(colored("You do not have any cards in you collection\n", "red"))
+
+        input("Press enter to return to main menu\n")
 
     def view_cards_needed(self):
         """
@@ -180,12 +221,7 @@ class User:
         clear_terminal()
         print_art_font("         Cards  Needed")
         print("\n\n\n")
-        print_center_string(
-            colored(
-                "Below is the list of cards required to complete your collection\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_center_string(colored("Below is the list of cards required to complete your collection\n", attrs=["bold", "underline"]))
 
     def appraise_portfolio(self):
         """
@@ -200,12 +236,7 @@ class User:
         clear_terminal()
         print_art_font("Portfolio Appraisal")
         print("\n\n\n")
-        print_center_string(
-            colored(
-                "Please see you current portfolio value below\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_center_string(colored("Please see you current portfolio value below\n", attrs=["bold", "underline"]))
 
     def delete_portfolio(self):
         """
@@ -220,12 +251,7 @@ class User:
         clear_terminal()
         print_art_font("      Delete  Portfolio")
         print("\n\n\n")
-        print_center_string(
-            colored(
-                "Please follow the steps below to remove all cards from your portfolio\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_center_string(colored("Please follow the steps below to remove all cards from your portfolio\n", attrs=["bold", "underline"]))
 
 
 def select_avail_user_option(function_to_call, function_text):
