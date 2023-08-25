@@ -61,7 +61,10 @@ class User:
     A class representing a human user.
 
     Attributes:
-        user_col_number (int): Value representing column in google spreadsheet that stores uses card collection
+        user_col_number (int):
+            Value representing column that stores uses card collection
+        col_letter (string):
+            Letter to represent user column
     """
 
     def __init__(self, col_number, col_letter):
@@ -69,17 +72,18 @@ class User:
         Initialise an instance of the User class.
 
         Parameters:
-            col_number (string): Represents the column number in the google sheet that store users cards
+            col_number (string):
+                Represents the column number that store users cards
         """
         self.col_number = col_number
         self.col_letter = col_letter
 
     def add_card(self):
         """
-        Allows a user to add a card to their collection based on the card number 
+        Adds a card to users collection based on the card number
 
         Parameters:
-            self (object): An instance of the User class 
+            self (object): An instance of the User class
         Returns:
             None
         """
@@ -88,13 +92,18 @@ class User:
         print_art_font("               Add  a  card")
         print_pokemon("19")
         print("\n")
-    
+
         # Get card number from user and validate
         while True:
-            card_num_selection = input("\nEnter the card number (1-102) that you would like to add: \n")
+            card_num_selection = input(
+                "\nEnter the card number (1-102) that you "
+                "would like to add: \n"
+            )
 
-            validated_card_num = validate_selection(card_num_selection, list(range(1, 103)))
-           
+            validated_card_num = validate_selection(
+                card_num_selection, list(range(1, 103))
+            )
+
             if validated_card_num:
                 break
 
@@ -102,27 +111,40 @@ class User:
         # Set card row adding 1 to account for headings
         card_row = str(validated_card_num + 1)
 
-        # Check if card is not in collection (== "No") and ad it 
+        # Check if card is not in collection (== "No") and ad it
         if bss_worksheet.cell(card_row, self.col_number).value == "No":
-            bss_worksheet.update_cell(card_row, self.col_number, "Yes") 
+            bss_worksheet.update_cell(card_row, self.col_number, "Yes")
 
             cardname = bss_worksheet.cell(card_row, 2).value
             clear_terminal()
-            print_center_string(colored(f"You have successfully added {cardname}, card No.{validated_card_num}.\n", "green", attrs=["bold", "underline"]))
+            print_center_string(
+                colored(
+                    f"You have successfully added {cardname}, "
+                    f"card No.{validated_card_num}.\n",
+                    "green",
+                    attrs=["bold", "underline"],
+                )
+            )
             print_pokemon(str(validated_card_num))
 
             select_avail_user_option(self.add_card, "Add another card")
-            
+
         else:
-            print_center_string(colored(f"This card is already in your collection\n", "red", attrs=["bold", "underline"]))
+            print_center_string(
+                colored(
+                    f"This card is already in your collection\n",
+                    "red",
+                    attrs=["bold", "underline"],
+                )
+            )
             select_avail_user_option(self.add_card, "Add another card")
 
     def remove_card(self):
         """
-        Allows a user to remove a card from their collection based on the card number 
+        Allows a user to remove a card from their collection based on the card number
 
         Parameters:
-            self (object): An instance of the User class 
+            self (object): An instance of the User class
         Returns:
             None
         """
@@ -133,38 +155,53 @@ class User:
         print("\n")
 
         while True:
-            card_num_selection = input("\nEnter the card number (1-102) that you would like to remove: \n")
+            card_num_selection = input(
+                "\nEnter the card number (1-102) that you would like to remove: \n"
+            )
 
-            validated_card_num = validate_selection(card_num_selection, list(range(1, 103)))
+            validated_card_num = validate_selection(
+                card_num_selection, list(range(1, 103))
+            )
             if validated_card_num:
                 break
 
-        
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
         # set card row adding 1 to account for headings
         card_row = str(validated_card_num + 1)
 
         # Check if card is card is in collection (== "Yes") and remove it
         if bss_worksheet.cell(card_row, self.col_number).value == "Yes":
-            bss_worksheet.update_cell(card_row, self.col_number, "No") 
+            bss_worksheet.update_cell(card_row, self.col_number, "No")
 
             cardname = bss_worksheet.cell(card_row, 2).value
             clear_terminal()
-            print_center_string(colored(f"You have successfully removed {cardname}, card No.{validated_card_num}.\n", "green", attrs=["bold", "underline"]))
+            print_center_string(
+                colored(
+                    f"You have successfully removed {cardname}, card No.{validated_card_num}.\n",
+                    "green",
+                    attrs=["bold", "underline"],
+                )
+            )
             print_pokemon(str(validated_card_num))
 
             select_avail_user_option(self.remove_card, "Remove another card")
-            
+
         else:
-            print_center_string(colored(f"You do not have this card in your collection\n", "red", attrs=["bold", "underline"]))
+            print_center_string(
+                colored(
+                    f"You do not have this card in your collection\n",
+                    "red",
+                    attrs=["bold", "underline"],
+                )
+            )
             select_avail_user_option(self.remove_card, "Remove another card")
 
     def view_portfolio(self):
         """
-        Allows a user to view their portfolio 
+        Allows a user to view their portfolio
 
         Parameters:
-            self (object): An instance of the User class 
+            self (object): An instance of the User class
         Returns:
             None
         """
@@ -172,15 +209,15 @@ class User:
         clear_terminal()
         print_art_font("       Your  Portfolio")
         print("")
- 
+
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
 
         # Get pokemon card names, numbers and user cards (Yes/No's to indicate which cards are in their collection)
         card_names = bss_worksheet.col_values(2)[1:]
         user_cards = bss_worksheet.col_values(self.col_number)[1:]
         card_nums = bss_worksheet.col_values(4)[1:]
-        
-        # Generate a list of pokemon cards in the users collection 
+
+        # Generate a list of pokemon cards in the users collection
         user_collection = []
         for card, card_num, name in zip(user_cards, card_nums, card_names):
             if card == "Yes":
@@ -190,26 +227,39 @@ class User:
         # Check if we have cards to display
         num_cards_collected = len(user_collection)
         if num_cards_collected > 0:
-
-            # Structure list of cards for display in 3 columns 
+            # Structure list of cards for display in 3 columns
             user_coll_columns = []
             num_cols = 3
             for i in range(0, len(user_collection), num_cols):
-                column = user_collection[i: i + num_cols]
+                column = user_collection[i : i + num_cols]
                 user_coll_columns.append(column)
 
-            print(tabulate(user_coll_columns, tablefmt = "fancy_grid"))
+            print(tabulate(user_coll_columns, tablefmt="fancy_grid"))
 
-            #check how many cards we show and display % complete
-            percentage = round((num_cards_collected/len(card_nums) *100))
+            # check how many cards we show and display % complete
+            percentage = round((num_cards_collected / len(card_nums) * 100))
             if percentage == 100:
-                print_center_string(colored(f"Congratulation your set is {percentage}% complete\n", "green", attrs=["bold", "underline"]))
+                print_center_string(
+                    colored(
+                        f"Congratulation your set is {percentage}% complete\n",
+                        "green",
+                        attrs=["bold", "underline"],
+                    )
+                )
             else:
-                print_center_string(colored(f"You have collected {percentage}%, of available cards in this set\n", "green", attrs=["bold", "underline"]))
+                print_center_string(
+                    colored(
+                        f"You have collected {percentage}%, of available cards in this set\n",
+                        "green",
+                        attrs=["bold", "underline"],
+                    )
+                )
 
         else:
             print("")
-            print_center_string(colored("You do not have any cards in you collection\n", "red"))
+            print_center_string(
+                colored("You do not have any cards in you collection\n", "red")
+            )
 
         input("Press enter to return to main menu\n")
 
@@ -218,7 +268,7 @@ class User:
         Allows a user to view the cards missing from their collection
 
         Parameters:
-            self (object): An instance of the User class 
+            self (object): An instance of the User class
         Returns:
             None
         """
@@ -226,15 +276,15 @@ class User:
         clear_terminal()
         print_art_font("         Cards  Needed")
         print("")
- 
+
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
 
         # Get pokemon card names, numbers and user cards (Yes/No's to indicate which cards are in their collection)
         card_names = bss_worksheet.col_values(2)[1:]
         user_cards = bss_worksheet.col_values(self.col_number)[1:]
         card_nums = bss_worksheet.col_values(4)[1:]
-        
-        # Generate a list of pokemon cards in the users collection 
+
+        # Generate a list of pokemon cards in the users collection
         user_missing_cards = []
         for card, card_num, name in zip(user_cards, card_nums, card_names):
             if card == "No":
@@ -244,31 +294,39 @@ class User:
         # Check if we have cards to display
         num_cards_missing = len(user_missing_cards)
         if num_cards_missing > 0:
-            # Structure list of cards for display in 3 columns 
+            # Structure list of cards for display in 3 columns
             user_coll_columns = []
             num_cols = 3
             for i in range(0, len(user_missing_cards), num_cols):
-                column = user_missing_cards[i: i + num_cols]
+                column = user_missing_cards[i : i + num_cols]
                 user_coll_columns.append(column)
 
-            print(tabulate(user_coll_columns, tablefmt = "fancy_grid"))
+            print(tabulate(user_coll_columns, tablefmt="fancy_grid"))
 
-            #check how many cards we show and display % complete
-            percentage = round((num_cards_missing/len(card_nums) *100))
-            print_center_string(colored(f"You are missing {percentage}%, of available cards in this set\n", "red", attrs=["bold", "underline"]))
+            # check how many cards we show and display % complete
+            percentage = round((num_cards_missing / len(card_nums) * 100))
+            print_center_string(
+                colored(
+                    f"You are missing {percentage}%, of available cards in this set\n",
+                    "red",
+                    attrs=["bold", "underline"],
+                )
+            )
 
         else:
             print("")
-            print_center_string(colored("Your collection is 100% complete, CONGRATULATIONS\n", "green"))
+            print_center_string(
+                colored("Your collection is 100% complete, CONGRATULATIONS\n", "green")
+            )
 
         input("Press enter to return to main menu\n")
 
     def appraise_portfolio(self):
         """
-        Allows a user to view their portfolio 
+        Allows a user to view their portfolio value
 
         Parameters:
-            self (object): An instance of the User class 
+            self (object): An instance of the User class
         Returns:
             None
         """
@@ -276,34 +334,51 @@ class User:
         clear_terminal()
         print_art_font("      Portfolio  Value")
         print("")
- 
+
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
 
         # Get pokemon card values and user cards (Yes/No's to indicate which cards are in their collection)
         card_values = bss_worksheet.col_values(5)[1:]
         user_cards = bss_worksheet.col_values(self.col_number)[1:]
-        
+
         # Sum the values of the cards the user, using a generator expression and sum function
-        portfolio_value = round (sum (float(card_value) for card, card_value in zip(user_cards, card_values) if card == "Yes"), 2)
-        
-        
+        portfolio_value = round(
+            sum(
+                float(card_value)
+                for card, card_value in zip(user_cards, card_values)
+                if card == "Yes"
+            ),
+            2,
+        )
+
         print_pokemon("46")
-        print_center_string(colored(f"Your pokemon portfolio value is, $ {portfolio_value} \n", "green", attrs=["bold", "underline"]))
-        
+        print_center_string(
+            colored(
+                f"Your pokemon portfolio value is, $ {portfolio_value} \n",
+                "green",
+                attrs=["bold", "underline"],
+            )
+        )
+
         if portfolio_value > 0:
             print_art_font(f"                       $  {portfolio_value}")
         else:
-            print_center_string(colored(f"You do not have any pokemon cards in your portfolio \n", "red", attrs=["bold", "underline"]))
+            print_center_string(
+                colored(
+                    f"You do not have any pokemon cards in your portfolio \n",
+                    "red",
+                    attrs=["bold", "underline"],
+                )
+            )
 
         input("Press enter to return to main menu\n")
 
-    
     def delete_portfolio(self):
         """
-        Allows a user to delete their portfolio 
+        Allows a user to delete their portfolio
 
         Parameters:
-            self (object): An instance of the User class 
+            self (object): An instance of the User class
         Returns:
             None
         """
@@ -311,7 +386,13 @@ class User:
         clear_terminal()
         print_art_font("     Portfolio Deleted")
         print_pokemon("50")
-        print_center_string(colored("Your Portfolio has been successfully deleted\n", "green", attrs=["bold", "underline"]))
+        print_center_string(
+            colored(
+                "Your Portfolio has been successfully deleted\n",
+                "green",
+                attrs=["bold", "underline"],
+            )
+        )
 
         # Add No to all cells in user column
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
@@ -333,7 +414,12 @@ def select_avail_user_option(function_to_call, function_text):
 
     """
     while True:
-        print_center_string(colored("Please select option (1 or 2) from the list shown and enter it below\n", attrs=["bold", "underline"], ))
+        print_center_string(
+            colored(
+                "Please select option (1 or 2) from the list shown and enter it below\n",
+                attrs=["bold", "underline"],
+            )
+        )
 
         print("1. " + function_text)
         print("2. Return to main menu\n")
@@ -346,7 +432,7 @@ def select_avail_user_option(function_to_call, function_text):
             function_to_call()
             break
         elif validated_selection == 2:
-            # just break, as this will return the user to main menu 
+            # just break, as this will return the user to main menu
             break
 
 
@@ -382,7 +468,12 @@ def login_options():
         None
     """
     while True:
-        print_center_string(colored("Please select an option (1-3) from the list shown and enter it below\n", attrs=["bold", "underline"]))
+        print_center_string(
+            colored(
+                "Please select an option (1-3) from the list shown and enter it below\n",
+                attrs=["bold", "underline"],
+            )
+        )
 
         print("1. Log into your account")
         print("2. Create an account")
@@ -419,7 +510,12 @@ def account_login():
     print_pokemon("10")
 
     print("\n\n")
-    print_center_string(colored("Please enter your username and password below to login (both are case sensitive)\n", attrs=["bold", "underline"]))
+    print_center_string(
+        colored(
+            "Please enter your username and password below to login (both are case sensitive)\n",
+            attrs=["bold", "underline"],
+        )
+    )
 
     username = get_valid_username(False)
 
@@ -455,7 +551,9 @@ def account_login():
             select_from_avail_options(account_login, "Try again")
 
     else:
-        print_center_string(colored("The username entered is not associated with an account\n", "red"))
+        print_center_string(
+            colored("The username entered is not associated with an account\n", "red")
+        )
 
         select_from_avail_options(account_login, "Try again")
 
@@ -478,7 +576,12 @@ def create_account():
     print_pokemon("44")
 
     print("\n\n")
-    print_center_string(colored("Please follow the steps below to create an account\n", attrs=["bold", "underline"]))
+    print_center_string(
+        colored(
+            "Please follow the steps below to create an account\n",
+            attrs=["bold", "underline"],
+        )
+    )
 
     # get new user details
     username = get_valid_username()
@@ -512,7 +615,9 @@ def create_account():
     add_column_to_sheet("base_set_shadowless")
 
     clear_terminal()
-    print_center_string(colored("Account created successfully\n", "green", attrs=["bold", "underline"]))
+    print_center_string(
+        colored("Account created successfully\n", "green", attrs=["bold", "underline"])
+    )
     print_pokemon("5")
 
     select_from_avail_options(create_account, "Create another account")
@@ -533,7 +638,12 @@ def reset_password():
     print_pokemon("63")
 
     print("\n\n")
-    print_center_string(colored("Please follow the steps below to reset your password\n", attrs=["bold", "underline"]))
+    print_center_string(
+        colored(
+            "Please follow the steps below to reset your password\n",
+            attrs=["bold", "underline"],
+        )
+    )
 
     phone_num = get_valid_phone_num(False)
 
@@ -546,7 +656,9 @@ def reset_password():
         row_num = phone_num_found.row
         username = login_worksheet.cell(row_num, 1).value
 
-        print_center_string(colored(f"Account found, username is {username}\n", "green"))
+        print_center_string(
+            colored(f"Account found, username is {username}\n", "green")
+        )
 
         # Get and store new password
         hashed_password = get_valid_password()
@@ -558,7 +670,11 @@ def reset_password():
         print_center_string(colored("Password has been reset\n", "green"))
 
     else:
-        print_center_string(colored("The phone number entered is not associated with an acconut\n", "red"))
+        print_center_string(
+            colored(
+                "The phone number entered is not associated with an acconut\n", "red"
+            )
+        )
 
     # Return to login menu or try again
     select_from_avail_options(reset_password, "Reset password again")
@@ -578,9 +694,13 @@ def main_menu(human_user):
         print_art_font("                Main  Menu")
         print_pokemon("4")
 
-        print_center_string(colored("Please select an option (1-6) from the list shown and enter it below\n", attrs=["bold", "underline"]))
+        print_center_string(
+            colored(
+                "Please select an option (1-6) from the list shown and enter it below\n",
+                attrs=["bold", "underline"],
+            )
+        )
 
-    
         print("1. Add a card to your portfolio")
         print("2. Remove a card from your portfolio")
         print("3. View portfolio")
@@ -612,13 +732,26 @@ def main_menu(human_user):
             print_art_font("      Delete  Portfolio")
             print_pokemon("29")
             while True:
-                print_center_string(colored("Please select an option (1 or 2) from the list shown and enter it below\n\n", attrs=["bold", "underline"]))
-                print_center_string(colored("CAUTION, selecting option 1 this will delete all cards from your portfolio\n", "red", attrs=["bold", "underline"]))
+                print_center_string(
+                    colored(
+                        "Please select an option (1 or 2) from the list shown and enter it below\n\n",
+                        attrs=["bold", "underline"],
+                    )
+                )
+                print_center_string(
+                    colored(
+                        "CAUTION, selecting option 1 this will delete all cards from your portfolio\n",
+                        "red",
+                        attrs=["bold", "underline"],
+                    )
+                )
                 print("1. Yes delete my portfolio")
                 print("2. Return to main menu\n")
                 confirm_selection = input("Enter your selection: \n")
 
-                confirm_selection_validated = validate_selection(confirm_selection, list(range(1, 3)))
+                confirm_selection_validated = validate_selection(
+                    confirm_selection, list(range(1, 3))
+                )
                 if confirm_selection_validated == 1:
                     human_user.delete_portfolio()
                     break
@@ -741,7 +874,12 @@ def select_from_avail_options(function_to_call, function_text):
 
     """
     while True:
-        print_center_string(colored("Please select option (1 or 2) from the list shown and enter it below\n", attrs=["bold", "underline"]))
+        print_center_string(
+            colored(
+                "Please select option (1 or 2) from the list shown and enter it below\n",
+                attrs=["bold", "underline"],
+            )
+        )
 
         print("1. " + function_text)
         print("2. Return to home page\n")
@@ -826,10 +964,14 @@ def validate_selection(selection_str, available_choices):
     try:
         selection_value = int(selection_str)
         if selection_value not in available_choices:
-            raise ValueError(f"Available options ({available_choices[0]} - {available_choices[-1]}), you entered {selection_value}")
+            raise ValueError(
+                f"Available options ({available_choices[0]} - {available_choices[-1]}), you entered {selection_value}"
+            )
     except ValueError as e:
         print()
-        print_center_string(colored(f"Invalid selection: {e}, please try again\n", "red"))
+        print_center_string(
+            colored(f"Invalid selection: {e}, please try again\n", "red")
+        )
         return False
     return selection_value
 
@@ -847,7 +989,9 @@ def get_valid_username(check_for_match=True):
     """
     while True:
         try:
-            username = input("\nPlease enter username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : \n")
+            username = input(
+                "\nPlease enter username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : \n"
+            )
 
             if len(username) < 5:
                 raise ValueError("Username must be at least 5 characters")
@@ -882,7 +1026,9 @@ def get_valid_password(hash_pass=True):
         password (string): Validated, Hashed password"""
     while True:
         try:
-            password = input("\nPlease enter a password between 5 and 15 characters long,\n(You may user letters, numbers, _ , - , & or !) : \n")
+            password = input(
+                "\nPlease enter a password between 5 and 15 characters long,\n(You may user letters, numbers, _ , - , & or !) : \n"
+            )
 
             if len(password) < 5:
                 raise ValueError("Password must be at least 5 characters")
@@ -918,7 +1064,9 @@ def get_valid_phone_num(check_for_match=True):
     """
     while True:
         try:
-            phone_num = input("\nPlease enter your mobile phone number consisting of 10 to 15 digits: \n")
+            phone_num = input(
+                "\nPlease enter your mobile phone number consisting of 10 to 15 digits: \n"
+            )
 
             if len(phone_num) < 10:
                 raise ValueError("Phone number must be at least 10 digits")
@@ -937,7 +1085,9 @@ def get_valid_phone_num(check_for_match=True):
 
         except ValueError as e:
             print("")
-            print_center_string(colored(f"Invalid phone number: {e}, please try again\n", "red"))
+            print_center_string(
+                colored(f"Invalid phone number: {e}, please try again\n", "red")
+            )
 
 
 # ----------------------------- MAIN -------------------------------
