@@ -274,10 +274,29 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("       Your  Portfolio")
+        print_art_font("      Portfolio  Value")
         print("")
  
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
+
+        # Get pokemon card values and user cards (Yes/No's to indicate which cards are in their collection)
+        card_values = bss_worksheet.col_values(5)[1:]
+        user_cards = bss_worksheet.col_values(self.col_number)[1:]
+        
+        # Sum the values of the cards the user, using a generator expression and sum function
+        portfolio_value = round (sum (float(card_value) for card, card_value in zip(user_cards, card_values) if card == "Yes"), 2)
+        
+        
+        print_pokemon("46")
+        print_center_string(colored(f"Your pokemon portfolio value is, $ {portfolio_value} \n", "green", attrs=["bold", "underline"]))
+        
+        if portfolio_value > 0:
+            print_art_font(f"                       $  {portfolio_value}")
+        else:
+            print_center_string(colored(f"You do not have any pokemon cards in your portfolio \n", "red", attrs=["bold", "underline"]))
+
+        input("Press enter to return to main menu\n")
+
     
     def delete_portfolio(self):
         """
