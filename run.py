@@ -141,7 +141,8 @@ class User:
 
     def remove_card(self):
         """
-        Allows a user to remove a card from their collection based on the card number
+        Allows a user to remove a card from their collection
+        based on the card number
 
         Parameters:
             self (object): An instance of the User class
@@ -156,7 +157,8 @@ class User:
 
         while True:
             card_num_selection = input(
-                "\nEnter the card number (1-102) that you would like to remove: \n"
+                "\nEnter the card number (1-102) that "
+                "you would like to remove: \n"
             )
 
             validated_card_num = validate_selection(
@@ -177,7 +179,8 @@ class User:
             clear_terminal()
             print_center_string(
                 colored(
-                    f"You have successfully removed {cardname}, card No.{validated_card_num}.\n",
+                    f"You have successfully removed {cardname}, "
+                    f"card No.{validated_card_num}.\n",
                     "green",
                     attrs=["bold", "underline"],
                 )
@@ -212,7 +215,8 @@ class User:
 
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
 
-        # Get pokemon card names, numbers and user cards (Yes/No's to indicate which cards are in their collection)
+        # Get pokemon card names, numbers and user cards -
+        # (Yes/No's to indicate which cards are in their collection)
         card_names = bss_worksheet.col_values(2)[1:]
         user_cards = bss_worksheet.col_values(self.col_number)[1:]
         card_nums = bss_worksheet.col_values(4)[1:]
@@ -249,7 +253,8 @@ class User:
             else:
                 print_center_string(
                     colored(
-                        f"You have collected {percentage}%, of available cards in this set\n",
+                        f"You have collected {percentage}%, "
+                        f"of available cards in this set\n",
                         "green",
                         attrs=["bold", "underline"],
                     )
@@ -279,7 +284,8 @@ class User:
 
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
 
-        # Get pokemon card names, numbers and user cards (Yes/No's to indicate which cards are in their collection)
+        # Get pokemon card names, numbers and user cards -
+        # (Yes/No's to indicate which cards are in their collection)
         card_names = bss_worksheet.col_values(2)[1:]
         user_cards = bss_worksheet.col_values(self.col_number)[1:]
         card_nums = bss_worksheet.col_values(4)[1:]
@@ -307,7 +313,8 @@ class User:
             percentage = round((num_cards_missing / len(card_nums) * 100))
             print_center_string(
                 colored(
-                    f"You are missing {percentage}%, of available cards in this set\n",
+                    f"You are missing {percentage}%, "
+                    f"of available cards in this set\n",
                     "red",
                     attrs=["bold", "underline"],
                 )
@@ -316,7 +323,8 @@ class User:
         else:
             print("")
             print_center_string(
-                colored("Your collection is 100% complete, CONGRATULATIONS\n", "green")
+                colored("Your collection is 100% complete, "
+                        "CONGRATULATIONS\n", "green")
             )
 
         input("Press enter to return to main menu\n")
@@ -337,11 +345,13 @@ class User:
 
         bss_worksheet = SHEET.worksheet("base_set_shadowless")
 
-        # Get pokemon card values and user cards (Yes/No's to indicate which cards are in their collection)
+        # Get pokemon card values and user cards -
+        # (Yes/No's to indicate which cards are in their collection)
         card_values = bss_worksheet.col_values(5)[1:]
         user_cards = bss_worksheet.col_values(self.col_number)[1:]
 
-        # Sum the values of the cards the user, using a generator expression and sum function
+        # Sum the values of the cards the user
+        # using a generator expression and sum function
         portfolio_value = round(
             sum(
                 float(card_value)
@@ -354,7 +364,7 @@ class User:
         print_pokemon("46")
         print_center_string(
             colored(
-                f"Your pokemon portfolio value is, $ {portfolio_value} \n",
+                f"Your pokemon portfolio value is, ${portfolio_value}\n",
                 "green",
                 attrs=["bold", "underline"],
             )
@@ -405,7 +415,8 @@ class User:
 
 def select_avail_user_option(function_to_call, function_text):
     """
-    Used to display a list of options to the user and allow them to make a selection
+    Used to display a list of options to the user and
+    allow them to make a selection
 
     Parameters:
         function_to_call (func): Function to be called if option 1 is selected
@@ -416,7 +427,8 @@ def select_avail_user_option(function_to_call, function_text):
     while True:
         print_center_string(
             colored(
-                "Please select option (1 or 2) from the list shown and enter it below\n",
+                "Please select option (1 or 2) from the list shown "
+                "and enter it below\n",
                 attrs=["bold", "underline"],
             )
         )
@@ -470,7 +482,8 @@ def login_options():
     while True:
         print_center_string(
             colored(
-                "Please select an option (1-3) from the list shown and enter it below\n",
+                "Please select an option (1-3) from the list shown "
+                "and enter it below\n",
                 attrs=["bold", "underline"],
             )
         )
@@ -481,7 +494,8 @@ def login_options():
 
         login_selection = input("Enter your selection: \n")
 
-        validated_selection = validate_selection(login_selection, list(range(1, 4)))
+        validated_selection = validate_selection(
+            login_selection, list(range(1, 4)))
 
         if validated_selection == 1:
             account_login()
@@ -512,7 +526,8 @@ def account_login():
     print("\n\n")
     print_center_string(
         colored(
-            "Please enter your username and password below to login (both are case sensitive)\n",
+            "Please enter your username and password below to login "
+            "(both are case sensitive)\n",
             attrs=["bold", "underline"],
         )
     )
@@ -524,13 +539,15 @@ def account_login():
 
         print_center_string("Logging in ....\n")
 
-        # Find the row their username is on and return the corrisponding password
+        # Find the row their username is on and
+        # return the corrisponding password
         login_worksheet = SHEET.worksheet("login")
         username_found = login_worksheet.find(username, in_column=1)
         row_num = username_found.row
         stored_hashed_pass = login_worksheet.cell(row_num, 2).value
 
-        # Slice the b'' from the stored pass and change type from string to bytes for comparison
+        # Slice the b'' from the stored pass and
+        # change type from string to bytes for comparison
         stored_hashed_pass = stored_hashed_pass[2:-1].encode("utf-8")
         password_attempt_bytes = password_attempt.encode()
 
@@ -538,7 +555,8 @@ def account_login():
         if bcrypt.checkpw(password_attempt_bytes, stored_hashed_pass):
             print_center_string(colored("Login Successful\n", "green"))
 
-            # get the users col number/letter and create a user using this value
+            # get the users col number/letter and
+            # create a user using this value
             bss_worksheet = SHEET.worksheet("base_set_shadowless")
             username_found_bss = bss_worksheet.find(username, in_row=1)
             user_col_num = username_found_bss.col
@@ -547,12 +565,14 @@ def account_login():
             human_user = User(user_col_num, user_col_letter)
             main_menu(human_user)
         else:
-            print_center_string(colored("Login failed, password incorrect\n", "red"))
+            print_center_string(
+                colored("Login failed, password incorrect\n", "red"))
             select_from_avail_options(account_login, "Try again")
 
     else:
         print_center_string(
-            colored("The username entered is not associated with an account\n", "red")
+            colored("The username entered is not associated "
+                    "with an account\n", "red")
         )
 
         select_from_avail_options(account_login, "Try again")
@@ -596,7 +616,8 @@ def create_account():
     login_worksheet = SHEET.worksheet("login")
     login_worksheet.append_row(account_details)
 
-    # Assign the user the next available column in base_set_shadowless sheet and add his username
+    # Assign the user the next available column in
+    # base_set_shadowless sheet and add his username
     bss_worksheet = SHEET.worksheet("base_set_shadowless")
     next_avail_column = bss_worksheet.acell("A2").value
     bss_worksheet.update_acell(next_avail_column + "1", username)
@@ -607,16 +628,20 @@ def create_account():
 
     bss_worksheet.update(range_to_update, update_values)
 
-    # Save the column letter assigned to that account as a letter for use when creating a user object
+    # Save the column letter assigned to that account as a letter
+    # for use when creating a user object
     bss_worksheet.update_acell(next_avail_column + "104", next_avail_column)
 
-    # Increment the next_avail_column stored in gsheets, and add a new column to ensure were always ready and hava a column for next account creation
-    bss_worksheet.update_acell("A2", increment_gsheet_column_value(next_avail_column))
+    # Increment the next_avail_column stored in gsheets, and add a new column
+    # to ensure were always ready and hava a column for next account creation
+    bss_worksheet.update_acell(
+        "A2", increment_gsheet_column_value(next_avail_column))
     add_column_to_sheet("base_set_shadowless")
 
     clear_terminal()
     print_center_string(
-        colored("Account created successfully\n", "green", attrs=["bold", "underline"])
+        colored("Account created successfully\n", "green",
+                attrs=["bold", "underline"])
     )
     print_pokemon("5")
 
@@ -650,7 +675,8 @@ def reset_password():
     print_center_string("Checking for account ....\n")
 
     if check_phone_num_in_use(phone_num):
-        # Find the row their phone number is on and return the corrisponding username
+        # Find the row their phone number is on and
+        # return the corrisponding username
         login_worksheet = SHEET.worksheet("login")
         phone_num_found = login_worksheet.find(phone_num, in_column=3)
         row_num = phone_num_found.row
@@ -672,7 +698,8 @@ def reset_password():
     else:
         print_center_string(
             colored(
-                "The phone number entered is not associated with an acconut\n", "red"
+                "The phone number entered is not associated "
+                "with an acconut\n", "red"
             )
         )
 
@@ -685,7 +712,8 @@ def main_menu(human_user):
     Displays a main menu to a user allowing them to select options
 
     Parameters:
-        human_user (object of User class): The current user that is using the app
+        human_user (object of User class):
+            The current user that is using the app
     Returns:
         None
     """
@@ -696,7 +724,8 @@ def main_menu(human_user):
 
         print_center_string(
             colored(
-                "Please select an option (1-6) from the list shown and enter it below\n",
+                "Please select an option (1-6) from the list shown"
+                "and enter it below\n",
                 attrs=["bold", "underline"],
             )
         )
@@ -710,7 +739,8 @@ def main_menu(human_user):
 
         menu_selection = input("Enter your selection: \n")
 
-        validated_selection = validate_selection(menu_selection, list(range(1, 7)))
+        validated_selection = validate_selection(
+            menu_selection, list(range(1, 7)))
 
         if validated_selection == 1:
             human_user.add_card()
@@ -734,13 +764,15 @@ def main_menu(human_user):
             while True:
                 print_center_string(
                     colored(
-                        "Please select an option (1 or 2) from the list shown and enter it below\n\n",
+                        "Please select an option (1 or 2) from the list shown "
+                        "and enter it below\n\n",
                         attrs=["bold", "underline"],
                     )
                 )
                 print_center_string(
                     colored(
-                        "CAUTION, selecting option 1 this will delete all cards from your portfolio\n",
+                        "CAUTION, selecting option 1 this will delete "
+                        "all cards from your portfolio\n",
                         "red",
                         attrs=["bold", "underline"],
                     )
@@ -792,7 +824,8 @@ def print_center_string(string):
 
     terminal_width = os.get_terminal_size().columns
 
-    # If string contains ascii escape chars, use re to clear them before calculations
+    # If string contains ascii escape chars,
+    # use re to clear them before calculations
     processed_string = re.sub(r"(\x1b|\033)\[[0-9;]*m", "", string)
 
     spaces = int((terminal_width - len(processed_string)) / 2)
@@ -865,7 +898,8 @@ def hash_password(password):
 
 def select_from_avail_options(function_to_call, function_text):
     """
-    Used to display a list of options to the user and allow them to make a selection
+    Used to display a list of options to the user
+    and allow them to make a selection
 
     Parameters:
         function_to_call (func): Function to be called if option 1 is selected
@@ -876,7 +910,8 @@ def select_from_avail_options(function_to_call, function_text):
     while True:
         print_center_string(
             colored(
-                "Please select option (1 or 2) from the list shown and enter it below\n",
+                "Please select option (1 or 2) from the list shown "
+                "and enter it below\n",
                 attrs=["bold", "underline"],
             )
         )
@@ -920,7 +955,8 @@ def increment_gsheet_column_value(column):
     other_chars = column[:-1]
 
     if last_char_in_column == "Z":
-        # call this function again passing in other_chars to update the letters before the Z and change the Z to A
+        # call this function again passing in other_chars
+        # to update the letters before the Z and change the Z to A
         return increment_gsheet_column_value(other_chars) + "A"
     else:
         return other_chars + chr(ord(last_char_in_column) + 1)
@@ -959,14 +995,16 @@ def validate_selection(selection_str, available_choices):
         selection_str (string): User selection to be validated
         available_choices (list): List of choices available to user
     Returns:
-        int or False: Returns selection value as an int if valid otherwise returns False
+        int or False: Returns selection value as an int if valid
+        otherwise returns False
     """
     try:
         selection_value = int(selection_str)
         if selection_value not in available_choices:
             raise ValueError(
-                f"Available options ({available_choices[0]} - {available_choices[-1]}), you entered {selection_value}"
-            )
+                f"Available options("
+                f"{available_choices[0]} - {available_choices[-1]}), "
+                f"you entered {selection_value}")
     except ValueError as e:
         print()
         print_center_string(
@@ -982,7 +1020,8 @@ def get_valid_username(check_for_match=True):
     Username can be between 5-15 chars long and include _ or -
 
     Parameters:
-        check_for_match (boolean): Flag used to control if we check gsheets for matching username
+        check_for_match (boolean):
+            Flag used to control if we check gsheets for matching username
     Returns:
         username (string): Validated username chosen by user
 
@@ -990,7 +1029,8 @@ def get_valid_username(check_for_match=True):
     while True:
         try:
             username = input(
-                "\nPlease enter username between 5 and 15 characters long,\n(You may use letters, numbers, _ or -) : \n"
+                "\nPlease enter username between 5 and 15 characters "
+                "long,\n(You may use letters, numbers, _ or -) : \n"
             )
 
             if len(username) < 5:
@@ -1000,7 +1040,8 @@ def get_valid_username(check_for_match=True):
                 raise ValueError("Username can not be more than 15 characters")
 
             if not re.match("^[a-zA-Z0-9_-]*$", username):
-                raise ValueError("Username can only use letters, numbers, _ or -")
+                raise ValueError("Username can only use letters, "
+                                 "numbers, _ or -")
 
             if check_for_match:
                 if check_username_in_use(username):
@@ -1027,7 +1068,8 @@ def get_valid_password(hash_pass=True):
     while True:
         try:
             password = input(
-                "\nPlease enter a password between 5 and 15 characters long,\n(You may user letters, numbers, _ , - , & or !) : \n"
+                "\nPlease enter a password between 5 and 15 characters "
+                "long,\n(You may user letters, numbers, _ , - , & or !) : \n"
             )
 
             if len(password) < 5:
@@ -1037,7 +1079,8 @@ def get_valid_password(hash_pass=True):
                 raise ValueError("Password cannot be more than 15 characters")
 
             if not re.match("^[a-zA-Z0-9_&!-]*$", password):
-                raise ValueError("Please only use letters, numbers, _ , - , & or !")
+                raise ValueError("Please only use letters, "
+                                 "numbers, _ , - , & or !")
 
             if hash_pass:
                 password = hash_password(password)
@@ -1058,14 +1101,16 @@ def get_valid_phone_num(check_for_match=True):
     Phone number can be between 10 and 15 digits
 
     Parameters:
-        check_for_match (boolean): Flag used to control if we check gsheets for matching number
+        check_for_match (boolean):
+        Flag used to control if we check gsheets for matching number
     Returns:
         phone_num (string): Validated phone number chosen by user
     """
     while True:
         try:
             phone_num = input(
-                "\nPlease enter your mobile phone number consisting of 10 to 15 digits: \n"
+                "\nPlease enter your mobile phone number consisting "
+                "of 10 to 15 digits: \n"
             )
 
             if len(phone_num) < 10:
@@ -1086,7 +1131,8 @@ def get_valid_phone_num(check_for_match=True):
         except ValueError as e:
             print("")
             print_center_string(
-                colored(f"Invalid phone number: {e}, please try again\n", "red")
+                colored(f"Invalid phone number: {e}, "
+                        "please try again\n", "red")
             )
 
 
