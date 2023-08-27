@@ -1,35 +1,15 @@
 # ------------------------- LIBRARY IMPORTS ---------------------------
-# Created by me to store and print pokemon ascii art
-from pokemon_ascii_art import print_pokemon
-
-# Creates text-based ASCII art banners
+import gspread
 import pyfiglet as pyf
-
-# Allows interaction with the operating systems functionalities
 import os
-
-# Add colors to text output
-from termcolor import colored
-
-# Allows access to functions to work with regular expressions
 import re
-
-# Used to hash passwords
 import bcrypt
-
-# Display data in table format
+from google.oauth2.service_account import Credentials
+from pokemon_ascii_art import print_pokemon
+from termcolor import colored
 from tabulate import tabulate
 
 # ---------------------------- API SETUP ------------------------------
-
-# Import the entire gspread library -
-# - access to all classes, methods and functions
-import gspread
-
-# Import Credentials class from the service account function -
-# - part of the google oauth library
-from google.oauth2.service_account import Credentials
-
 # Specify what parts of the google account the user has access to
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -48,11 +28,6 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 
 # Access sheet for project
 SHEET = GSPREAD_CLIENT.open("pokemon_portfolio")
-
-# login = SHEET.worksheet('login')
-
-# data = login.get_all_values()
-# print(data)
 
 
 # --------------------------- CLASSES -----------------------------
@@ -132,7 +107,7 @@ class User:
         else:
             print_center_string(
                 colored(
-                    f"This card is already in your collection\n",
+                    "This card is already in your collection\n",
                     "red",
                     attrs=["bold", "underline"],
                 )
@@ -192,7 +167,7 @@ class User:
         else:
             print_center_string(
                 colored(
-                    f"You do not have this card in your collection\n",
+                    "You do not have this card in your collection\n",
                     "red",
                     attrs=["bold", "underline"],
                 )
@@ -235,7 +210,7 @@ class User:
             user_coll_columns = []
             num_cols = 3
             for i in range(0, len(user_collection), num_cols):
-                column = user_collection[i : i + num_cols]
+                column = user_collection[i:i + num_cols]
                 user_coll_columns.append(column)
 
             print(tabulate(user_coll_columns, tablefmt="fancy_grid"))
@@ -254,7 +229,7 @@ class User:
                 print_center_string(
                     colored(
                         f"You have collected {percentage}%, "
-                        f"of available cards in this set\n",
+                        "of available cards in this set\n",
                         "green",
                         attrs=["bold", "underline"],
                     )
@@ -304,7 +279,7 @@ class User:
             user_coll_columns = []
             num_cols = 3
             for i in range(0, len(user_missing_cards), num_cols):
-                column = user_missing_cards[i : i + num_cols]
+                column = user_missing_cards[i:i + num_cols]
                 user_coll_columns.append(column)
 
             print(tabulate(user_coll_columns, tablefmt="fancy_grid"))
@@ -314,7 +289,7 @@ class User:
             print_center_string(
                 colored(
                     f"You are missing {percentage}%, "
-                    f"of available cards in this set\n",
+                    "of available cards in this set\n",
                     "red",
                     attrs=["bold", "underline"],
                 )
@@ -375,7 +350,7 @@ class User:
         else:
             print_center_string(
                 colored(
-                    f"You do not have any pokemon cards in your portfolio \n",
+                    "You do not have any pokemon cards in your portfolio \n",
                     "red",
                     attrs=["bold", "underline"],
                 )
@@ -729,18 +704,21 @@ def main_menu(human_user):
                 attrs=["bold", "underline"],
             )
         )
+        while True:
+            print("1. Add a card to your portfolio")
+            print("2. Remove a card from your portfolio")
+            print("3. View portfolio")
+            print("4. View cards needed to complete collection")
+            print("5. Appraise portfolio")
+            print("6. Delete portfolio\n")
 
-        print("1. Add a card to your portfolio")
-        print("2. Remove a card from your portfolio")
-        print("3. View portfolio")
-        print("4. View cards needed to complete collection")
-        print("5. Appraise portfolio")
-        print("6. Delete portfolio\n")
+            menu_selection = input("Enter your selection: \n")
 
-        menu_selection = input("Enter your selection: \n")
+            validated_selection = validate_selection(
+                menu_selection, list(range(1, 7)))
 
-        validated_selection = validate_selection(
-            menu_selection, list(range(1, 7)))
+            if validated_selection:
+                break
 
         if validated_selection == 1:
             human_user.add_card()
@@ -824,8 +802,8 @@ def print_center_string(string):
 
     terminal_width = os.get_terminal_size().columns
 
-    # If string contains ascii escape chars,
-    # use re to clear them before calculations
+    # If string contains ascii escape chars, use regex
+    # to substitute them with " " before calculations
     processed_string = re.sub(r"(\x1b|\033)\[[0-9;]*m", "", string)
 
     spaces = int((terminal_width - len(processed_string)) / 2)
@@ -996,15 +974,19 @@ def validate_selection(selection_str, available_choices):
         available_choices (list): List of choices available to user
     Returns:
         int or False: Returns selection value as an int if valid
-        otherwise returns False
+                      otherwise returns False
     """
     try:
+        if not selection_str.isdigit():
+            raise ValueError(f"Your selection {selection_str} is not a number")
+
         selection_value = int(selection_str)
         if selection_value not in available_choices:
             raise ValueError(
-                f"Available options("
+                "Available options ("
                 f"{available_choices[0]} - {available_choices[-1]}), "
                 f"you entered {selection_value}")
+
     except ValueError as e:
         print()
         print_center_string(
@@ -1039,6 +1021,8 @@ def get_valid_username(check_for_match=True):
             if len(username) > 15:
                 raise ValueError("Username can not be more than 15 characters")
 
+            # Uses regex to check username from start to end and
+            # ensures it only contains, letters, numbers, _ and -
             if not re.match("^[a-zA-Z0-9_-]*$", username):
                 raise ValueError("Username can only use letters, "
                                  "numbers, _ or -")
@@ -1078,6 +1062,8 @@ def get_valid_password(hash_pass=True):
             if len(password) > 15:
                 raise ValueError("Password cannot be more than 15 characters")
 
+            # Uses regex to check password from start to end and ensures
+            # it only contains, letters, numbers, _ , & , ! and  -
             if not re.match("^[a-zA-Z0-9_&!-]*$", password):
                 raise ValueError("Please only use letters, "
                                  "numbers, _ , - , & or !")
@@ -1119,6 +1105,8 @@ def get_valid_phone_num(check_for_match=True):
             if len(phone_num) > 15:
                 raise ValueError("Phone number cannot be more than 15 digits")
 
+            # Uses regex to check phone_num from start to end and
+            # ensure it only contains, letters, numbers
             if not re.match("^[0-9]*$", phone_num):
                 raise ValueError("Please only use numbers")
 
