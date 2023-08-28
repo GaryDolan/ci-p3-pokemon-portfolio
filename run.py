@@ -31,11 +31,15 @@ try:
 
     # Access sheet for project
     SHEET = GSPREAD_CLIENT.open("pokemon_portfolio")
-
+except FileNotFoundError:
+    print("Creds.json not found, please ensure file exists and is named correctly\n")
+    sys.exit(1)  # exit due to err
+except gspread.exceptions.GSpreadException as gspread_e:
+    print(f"An error occured while initialising gspread: {gspread_e}, please press the Run Program above to try again\n")
+    sys.exit(1)  # exit due to err
 except Exception as e:
     print(f"\nAn error occured when initialising: {e}, "
           "please press the Run Program above to try again\n")
-    print()
     sys.exit(1)  # exit due to err
 
 
