@@ -52,7 +52,7 @@ class User:
 
     Attributes:
         user_col_number (int):
-            Value representing column that stores uses card collection
+            Represents column that stores user card collection
         col_letter (string):
             Letter to represent user column
     """
@@ -63,7 +63,7 @@ class User:
 
         Parameters:
             col_number (string):
-                Represents the column number that store users cards
+                Represents the column number that stores users cards
         """
         self.col_number = col_number
         self.col_letter = col_letter
@@ -167,7 +167,7 @@ class User:
             cardname = bss_worksheet.cell(card_row, 2).value
             clear_terminal()
             print_styled_msg(f"You have successfully removed {cardname}, "
-                             f"card No.{validated_card_num}.\n", "green")
+                             f"card No.{validated_card_num}\n", "green")
 
             print_pokemon(str(validated_card_num))
 
@@ -183,7 +183,7 @@ class User:
 
     def view_portfolio(self):
         """
-        Allows a user to view their portfolio
+        Allows a user to view their portfolio of cards
 
         Parameters:
             self (object): An instance of the User class
@@ -265,7 +265,7 @@ class User:
         user_cards = bss_worksheet.col_values(self.col_number)[1:]
         card_nums = bss_worksheet.col_values(4)[1:]
 
-        # Generate a list of pokemon cards in the users collection
+        # Generate a list of pokemon cards not in the users collection
         user_missing_cards = []
         for card, card_num, name in zip(user_cards, card_nums, card_names):
             if card == "No":
@@ -377,7 +377,7 @@ class User:
 
 def display_welcome_banner():
     """
-    Displays welcome banner and image
+    Displays welcome banner text and image
 
     Parameters:
         None
@@ -436,7 +436,7 @@ def login_options():
 def account_login():
     """
     Allows user to login to app using their username and password
-    Retrieves stored password for username and compares to entered pass
+    Retrieves stored password for username and compares to entered password
 
     Parameters:
         None
@@ -638,7 +638,7 @@ def main_menu(human_user):
 
     Parameters:
         human_user (object of User class):
-            The current user that is using the app
+            The logged in user that is using the app
     Returns:
         None
     """
@@ -706,133 +706,6 @@ def main_menu(human_user):
                     break
 
 
-# ----------------------- HELPER FUNCTIONS ------------------------
-
-
-def print_art_font(string, color):
-    """
-    Uses pyfiglet library to convert given string into an art font style
-    Prints sting in selected colour
-
-    Parameters:
-        string (string): Text to be converted
-        color (string): Colour to print converted text
-    Returns:
-        None
-    """
-    font = pyf.Figlet(font="big", width=110)
-    msg = font.renderText(string)
-    msg = msg.rstrip()
-
-    print(colored(msg, color))
-
-
-def print_center_string(string):
-    """
-    Centers and prints the given text to the terminal
-    If text contains ascii escape codes for colour etc
-    the function will stip these out for calculating
-    spacing but will still print original text
-
-    Parameters:
-        String (string): String to be centered and printed
-    Returns:
-        None
-    """
-
-    terminal_width = os.get_terminal_size().columns
-
-    # If string contains ascii escape chars, use regex
-    # to substitute them with " " before calculations
-    processed_string = re.sub(r"(\x1b|\033)\[[0-9;]*m", "", string)
-
-    spaces = int((terminal_width - len(processed_string)) / 2)
-    centered_string = " " * spaces + string
-    print(centered_string)
-
-
-def clear_terminal():
-    """
-    Clears text from trminal
-    """
-    if os.name == "posix":  # Linux and macOS
-        os.system("clear")
-    elif os.name == "nt":  # Windows
-        os.system("cls")
-
-
-def check_username_in_use(username):
-    """
-    Check if username is already stored in google sheet
-
-    Parameters:
-        username (string): String to search for in gogle sheets
-    Returns:
-        Result (int): 1 for username found
-                    2 for username not found
-                    3 for API error
-    """
-    result = None
-    login_worksheet = open_worksheet("login")
-    # Exit if we had an API error
-    if not (login_worksheet):
-        result = 3
-        return result
-
-    username_found = login_worksheet.find(username, in_column=1)
-    if username_found:
-        result = 1
-        return result
-    else:
-        result = 0
-        return result
-
-
-def check_phone_num_in_use(phone_num):
-    """
-    Check if phone number is already stored in google sheet
-
-    Parameters:
-        username (string): String to search for in google sheets
-    Returns:
-        Result (int): 1 for username found
-                    2 for username not found
-                    3 for API error
-    """
-    result = None
-    login_worksheet = open_worksheet("login")
-    # Exit if we had an API error
-    if not (login_worksheet):
-        result = 3
-        return result
-
-    phone_num_found = login_worksheet.find(phone_num, in_column=3)
-    if phone_num_found:
-        result = 1
-        return result
-    else:
-        result = 0
-        return result
-
-
-def hash_password(password):
-    """
-    Hashes given password using a generated salt
-
-    Parameters:
-        password (string): Password to be hashed
-    Returns:
-        password (string): String representing the hashed password
-    """
-    salt = bcrypt.gensalt()
-    hashed_pass = bcrypt.hashpw(password.encode(), salt)
-
-    # retured as strings for storage in gsheets
-    hashed_pass = str(hashed_pass)
-
-    return hashed_pass
-
-
 def select_from_avail_options(
         function_to_call, function_text, main_menu=False):
     """
@@ -873,6 +746,132 @@ def select_from_avail_options(
                 break  # Returns to main menu
 
 
+# ----------------------- HELPER FUNCTIONS ------------------------
+
+
+def print_art_font(string, color):
+    """
+    Uses pyfiglet library to convert given string into an art font style
+    Prints sting in selected colour
+
+    Parameters:
+        string (string): Text to be converted
+        color (string): Colour to print converted text
+    Returns:
+        None
+    """
+    font = pyf.Figlet(font="big", width=110)
+    msg = font.renderText(string)
+    msg = msg.rstrip()
+
+    print(colored(msg, color))
+
+
+def print_center_string(string):
+    """
+    Centers and prints the given text to the terminal
+    If text contains ascii escape codes for colour etc, these will stip
+    these out for calculating spacing.
+
+    Parameters:
+        string (string): String to be centered and printed
+    Returns:
+        None
+    """
+
+    terminal_width = os.get_terminal_size().columns
+
+    # If string contains ascii escape chars, use regex
+    # to substitute them with " " before calculations
+    processed_string = re.sub(r"(\x1b|\033)\[[0-9;]*m", "", string)
+
+    spaces = int((terminal_width - len(processed_string)) / 2)
+    centered_string = " " * spaces + string
+    print(centered_string)
+
+
+def clear_terminal():
+    """
+    Clears text from trminal
+    """
+    if os.name == "posix":  # Linux and macOS
+        os.system("clear")
+    elif os.name == "nt":  # Windows
+        os.system("cls")
+
+
+def check_username_in_use(username):
+    """
+    Check if username is already stored in google sheet
+
+    Parameters:
+        username (string): String to search for in gogle sheets
+    Returns:
+        Result (int): 1 Username found
+                    2 Username not found
+                    3 API error
+    """
+    result = None
+    login_worksheet = open_worksheet("login")
+    # Exit if we had an API error
+    if not (login_worksheet):
+        result = 3
+        return result
+
+    username_found = login_worksheet.find(username, in_column=1)
+    if username_found:
+        result = 1
+        return result
+    else:
+        result = 0
+        return result
+
+
+def check_phone_num_in_use(phone_num):
+    """
+    Check if phone number is already stored in google sheet
+
+    Parameters:
+        phone_num (string): String to search for in google sheets
+    Returns:
+        Result (int): 1 Phone num found
+                    2 Phone num not found
+                    3 API error
+    """
+    result = None
+    login_worksheet = open_worksheet("login")
+    # Exit if we had an API error
+    if not (login_worksheet):
+        result = 3
+        return result
+
+    phone_num_found = login_worksheet.find(phone_num, in_column=3)
+    if phone_num_found:
+        result = 1
+        return result
+    else:
+        result = 0
+        return result
+
+
+def hash_password(password):
+    """
+    Hashes given password using a generated salt
+
+    Parameters:
+        password (string): Password to be hashed
+    Returns:
+        hashed_pass (string): String representing the hashed password
+    """
+    salt = bcrypt.gensalt()
+    hashed_pass = bcrypt.hashpw(password.encode(), salt)
+
+    # retured as strings for storage in gsheets
+    hashed_pass = str(hashed_pass)
+
+    return hashed_pass
+
+
 def print_styled_msg(msg, color):
     """
     Prints a centered, bold message in a selected colour
@@ -891,7 +890,7 @@ def print_styled_msg(msg, color):
 
 def increment_gsheet_column_value(column):
     """
-    Used to increment column values in gsheets.
+    Used to increment column values from gsheets.
     Pass in A returns B
     Pass in Z returns AA
     Pass in GZ returns HA etc.
@@ -1056,9 +1055,10 @@ def get_valid_password(hash_pass=True):
     Hashes password via call to external function
 
     Parameters:
-        hash_pass: Flag to allow password hashing to be skipped
+        hash_pass: Flag used to control if password hashing is caried out
     Returns:
-        password (string): Validated, Hashed password"""
+        password (string): Validated, Hashed password
+    """
     while True:
         try:
             password = input(
@@ -1097,7 +1097,7 @@ def get_valid_phone_num(check_for_match=True):
 
     Parameters:
         check_for_match (boolean):
-        Flag used to control if we check gsheets for matching number
+            Flag used to control if we check gsheets for matching number
     Returns:
         phone_num (string): Validated phone number chosen by user
     """
