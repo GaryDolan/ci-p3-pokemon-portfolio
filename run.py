@@ -39,8 +39,8 @@ except gspread.exceptions.GSpreadException as gspread_e:
     print("An error occured while initialising gspread: "
           f"{gspread_e}, please press the Run Program above to try again\n")
     sys.exit(1)  # exit due to err
-except Exception as e:
-    print(f"\nAn error occured when initialising: {e}, "
+except Exception as err:
+    print(f"\nAn error occured when initialising: {err}, "
           "please press the Run Program above to try again\n")
     sys.exit(1)  # exit due to err
 
@@ -111,26 +111,17 @@ class User:
 
             cardname = bss_worksheet.cell(card_row, 2).value
             clear_terminal()
-            print_center_string(
-                colored(
-                    f"You have successfully added {cardname}, "
-                    f"card No.{validated_card_num}.\n",
-                    "green",
-                    attrs=["bold", "underline"],
-                )
-            )
+            print_styled_msg(f"You have successfully added {cardname}, "
+                             f"card No.{validated_card_num}\n", "green")
+
             print_pokemon(str(validated_card_num))
 
             select_avail_user_option(self.add_card, "Add another card")
 
         else:
-            print_center_string(
-                colored(
-                    "This card is already in your collection\n",
-                    "red",
-                    attrs=["bold", "underline"],
-                )
-            )
+            print_styled_msg("This card is already in your collection\n",
+                             "red")
+
             select_avail_user_option(self.add_card, "Add another card")
 
     def remove_card(self):
@@ -175,26 +166,17 @@ class User:
 
             cardname = bss_worksheet.cell(card_row, 2).value
             clear_terminal()
-            print_center_string(
-                colored(
-                    f"You have successfully removed {cardname}, "
-                    f"card No.{validated_card_num}.\n",
-                    "green",
-                    attrs=["bold", "underline"],
-                )
-            )
+            print_styled_msg(f"You have successfully removed {cardname}, "
+                             f"card No.{validated_card_num}.\n", "green")
+
             print_pokemon(str(validated_card_num))
 
             select_avail_user_option(self.remove_card, "Remove another card")
 
         else:
-            print_center_string(
-                colored(
-                    "You do not have this card in your collection\n",
-                    "red",
-                    attrs=["bold", "underline"],
-                )
-            )
+            print_styled_msg(
+                "You do not have this card in your collection\n", "red")
+
             select_avail_user_option(self.remove_card, "Remove another card")
 
     def view_portfolio(self):
@@ -244,28 +226,15 @@ class User:
             # check how many cards we show and display % complete
             percentage = round((num_cards_collected / len(card_nums) * 100))
             if percentage == 100:
-                print_center_string(
-                    colored(
-                        f"Congratulation your set is {percentage}% complete\n",
-                        "green",
-                        attrs=["bold", "underline"],
-                    )
-                )
+                print_styled_msg(f"Congratulation your set is {percentage}%"
+                                 " complete\n", "green")
             else:
-                print_center_string(
-                    colored(
-                        f"You have collected {percentage}%, "
-                        "of available cards in this set\n",
-                        "green",
-                        attrs=["bold", "underline"],
-                    )
-                )
-
+                print_styled_msg(f"You have collected {percentage}%, "
+                                 "of available cards in this set\n", "green")
         else:
             print("")
-            print_center_string(
-                colored("You do not have any cards in you collection\n", "red")
-            )
+            print_styled_msg(
+                "You do not have any cards in you collection\n", "red")
 
         input("Press enter to return to main menu\n")
 
@@ -315,21 +284,12 @@ class User:
 
             # check how many cards we show and display % complete
             percentage = round((num_cards_missing / len(card_nums) * 100))
-            print_center_string(
-                colored(
-                    f"You are missing {percentage}%, "
-                    "of available cards in this set\n",
-                    "red",
-                    attrs=["bold", "underline"],
-                )
-            )
-
+            print_styled_msg(f"You are missing {percentage}%, "
+                             "of available cards in this set\n", "red")
         else:
             print("")
-            print_center_string(
-                colored("Your collection is 100% complete, "
-                        "CONGRATULATIONS\n", "green")
-            )
+            print_styled_msg("Your collection is 100% complete, "
+                             "CONGRATULATIONS\n", "green")
 
         input("Press enter to return to main menu\n")
 
@@ -369,28 +329,20 @@ class User:
         )
 
         print_pokemon("46")
-        print_center_string(
-            colored(
-                f"Your pokemon portfolio value is, ${portfolio_value}\n",
-                "green",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_styled_msg(f"Your pokemon portfolio value is, "
+                         f"${portfolio_value}\n", "green")
 
         if portfolio_value > 0:
-            print_art_font(f"                       $  {portfolio_value}", "white")
+            print_art_font(f"                       $  {portfolio_value} ",
+                           "white")
         else:
-            print_center_string(
-                colored(
-                    "You do not have any pokemon cards in your portfolio \n",
-                    "red",
-                    attrs=["bold", "underline"],
-                )
-            )
+            print_styled_msg("You do not have any pokemon cards "
+                             "in your portfolio\n", "red")
 
         input("Press enter to return to main menu\n")
 
     def delete_portfolio(self):
+
         """
         Allows a user to delete their portfolio
 
@@ -403,13 +355,8 @@ class User:
         clear_terminal()
         print_art_font("     Portfolio Deleted", "yellow")
         print_pokemon("50")
-        print_center_string(
-            colored(
-                "Your Portfolio has been successfully deleted\n",
-                "green",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_styled_msg("Your Portfolio has been successfully deleted\n",
+                         "green")
 
         # Add No to all cells in user column
         bss_worksheet = open_worksheet("base_set_shadowless")
@@ -438,7 +385,7 @@ def display_welcome_banner():
     clear_terminal()
 
     print_art_font("Pokemon Portfolio", "yellow")
-    print()    
+    print()
     print_center_string(
         colored(
             "Collect and appraise your base set pokemon cards\n", "yellow"
@@ -461,13 +408,8 @@ def login_options():
         None
     """
     while True:
-        print_center_string(
-            colored(
-                "Please select an option (1-3) from the list shown "
-                "and enter it below\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_styled_msg("Please select an option (1-3) from the list "
+                         "shown and enter it below\n", "white")
 
         print("1. Log into your account")
         print("2. Create an account")
@@ -505,13 +447,8 @@ def account_login():
     print_pokemon("10")
 
     print("\n\n")
-    print_center_string(
-        colored(
-            "Please enter your username and password below to login "
-            "(both are case sensitive)\n",
-            attrs=["bold", "underline"],
-        )
-    )
+    print_styled_msg("Please enter your username and password below to login "
+                     "(both are case sensitive)\n", "white")
 
     username = get_valid_username(False)
     checked_username = check_username_in_use(username)
@@ -540,7 +477,7 @@ def account_login():
 
         # check if password entered matches
         if bcrypt.checkpw(password_attempt_bytes, stored_hashed_pass):
-            print_center_string(colored("Login Successful\n", "green"))
+            print_styled_msg("Login Successful\n", "green")
 
             # get the users col number/letter and
             # create a user using this value
@@ -551,15 +488,12 @@ def account_login():
             human_user = User(user_col_num, user_col_letter)
             main_menu(human_user)
         else:
-            print_center_string(
-                colored("Login failed, password incorrect\n", "red"))
+            print_styled_msg("Login failed, password incorrect\n", "red")
             select_from_avail_options(account_login, "Try again")
 
     elif checked_username == 0:
-        print_center_string(
-            colored("The username entered is not associated "
-                    "with an account\n", "red")
-        )
+        print_styled_msg("The username entered is not associated "
+                         "with an account\n", "red")
 
         select_from_avail_options(account_login, "Try again")
     else:
@@ -584,19 +518,15 @@ def create_account():
     print_pokemon("44")
 
     print("\n\n")
-    print_center_string(
-        colored(
-            "Please follow the steps below to create an account\n",
-            attrs=["bold", "underline"],
-        )
-    )
+    print_styled_msg("Please follow the steps below to create an account\n",
+                     "white")
 
     # get new user details, if API err, return to home
     username = get_valid_username()
     if username == 1:
         display_welcome_banner()
 
-    print_center_string(colored("Username available\n", "green"))
+    print_styled_msg("Username available\n", "green")
     password = get_valid_password()
 
     phone_num = get_valid_phone_num()
@@ -637,10 +567,8 @@ def create_account():
     add_column_to_sheet("base_set_shadowless")
 
     clear_terminal()
-    print_center_string(
-        colored("Account created successfully\n", "green",
-                attrs=["bold", "underline"])
-    )
+    print_styled_msg("Account created successfully\n", "green")
+
     print_pokemon("5")
 
     select_from_avail_options(create_account, "Create another account")
@@ -661,12 +589,8 @@ def reset_password():
     print_pokemon("63")
 
     print("\n\n")
-    print_center_string(
-        colored(
-            "Please follow the steps below to reset your password\n",
-            attrs=["bold", "underline"],
-        )
-    )
+    print_styled_msg(
+        "Please follow the steps below to reset your password\n", "white")
 
     phone_num = get_valid_phone_num(False)
     print_center_string("Checking for account ....\n")
@@ -684,9 +608,7 @@ def reset_password():
         row_num = phone_num_found.row
         username = login_worksheet.cell(row_num, 1).value
 
-        print_center_string(
-            colored(f"Account found, username is {username}\n", "green")
-        )
+        print_styled_msg(f"Account found, username is {username}\n", "green")
 
         # Get and store new password
         hashed_password = get_valid_password()
@@ -695,15 +617,11 @@ def reset_password():
         login_worksheet.update_acell("B" + str(row_num), hashed_password)
 
         print("")
-        print_center_string(colored("Password has been reset\n", "green"))
+        print_styled_msg("Password has been reset\n", "green")
 
     elif checked_phone_num == 0:  # In use
-        print_center_string(
-            colored(
-                "The phone number entered is not associated "
-                "with an acconut\n", "red"
-            )
-        )
+        print_styled_msg("The phone number entered is not associated "
+                         "with an acconut\n", "red")
     else:
         display_welcome_banner()
 
@@ -726,13 +644,9 @@ def main_menu(human_user):
         print_art_font("                Main  Menu", "yellow")
         print_pokemon("4")
 
-        print_center_string(
-            colored(
-                "Please select an option (1-6) from the list shown"
-                "and enter it below\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_styled_msg("Please select an option (1-6) from the list shown"
+                         "and enter it below\n", "white")
+
         while True:
             print("1. Add a card to your portfolio")
             print("2. Remove a card from your portfolio")
@@ -769,21 +683,12 @@ def main_menu(human_user):
             print_art_font("      Delete  Portfolio", "yellow")
             print_pokemon("29")
             while True:
-                print_center_string(
-                    colored(
-                        "Please select an option (1 or 2) from the list shown "
-                        "and enter it below\n\n",
-                        attrs=["bold", "underline"],
-                    )
-                )
-                print_center_string(
-                    colored(
-                        "CAUTION, selecting option 1 this will delete "
-                        "all cards from your portfolio\n",
-                        "red",
-                        attrs=["bold", "underline"],
-                    )
-                )
+                print_styled_msg("Please select an option (1 or 2) from the "
+                                 "list shown and enter it below\n\n", "white")
+
+                print_styled_msg("CAUTION, selecting option 1 this will delete"
+                                 " all cards from your portfolio\n", "red")
+
                 print("1. Yes delete my portfolio")
                 print("2. Return to main menu\n")
                 confirm_selection = input("Enter your selection: \n")
@@ -804,17 +709,19 @@ def main_menu(human_user):
 def print_art_font(string, color):
     """
     Uses pyfiglet library to convert given string into an art font style
+    Prints sting in selected colour
 
     Parameters:
-        text (string): Text to be converted
+        string (string): Text to be converted
+        color (string): Colour to print converted text
     Returns:
         None
     """
     font = pyf.Figlet(font="big", width=110)
     msg = font.renderText(string)
     msg = msg.rstrip()
-    
-    print (colored(msg,color))
+
+    print(colored(msg, color))
 
 
 def print_center_string(string):
@@ -935,13 +842,8 @@ def select_from_avail_options(function_to_call, function_text):
 
     """
     while True:
-        print_center_string(
-            colored(
-                "Please select option (1 or 2) from the list shown "
-                "and enter it below\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_styled_msg("Please select option (1 or 2) from the list shown "
+                         "and enter it below\n", "white")
 
         print("1. " + function_text)
         print("2. Return to home page\n")
@@ -970,13 +872,8 @@ def select_avail_user_option(function_to_call, function_text):
 
     """
     while True:
-        print_center_string(
-            colored(
-                "Please select option (1 or 2) from the list shown "
-                "and enter it below\n",
-                attrs=["bold", "underline"],
-            )
-        )
+        print_styled_msg("Please select option (1 or 2) from the list shown "
+                         "and enter it below\n", "white")
 
         print("1. " + function_text)
         print("2. Return to main menu\n")
@@ -991,6 +888,19 @@ def select_avail_user_option(function_to_call, function_text):
         elif validated_selection == 2:
             # just break, as this will return the user to main menu
             break
+
+
+def print_styled_msg(msg, color):
+    """
+    Prints a centered, bold message in a selected colour
+
+    Parameters:
+        msg: Message to be printed
+        color: Colour of message to be printed
+    Returns:
+        None:
+    """
+    print_center_string(colored(msg, color, attrs=["bold", "underline"]))
 
 
 # ----------------------- GSHEETS FUNCTIONS -----------------------
@@ -1059,25 +969,19 @@ def open_worksheet(worksheet_name):
         return opened_worksheet
 
     except gspread.exceptions.WorksheetNotFound as e:
-        print_center_string(
-            colored(f"Worksheet {e} not found, please try again, "
-                    "Loading ...\n", "red")
-        )
+        print_styled_msg(f"Worksheet {e} not found, please try again, "
+                         "Loading ...\n", "red")
         time.sleep(3)
         return False
     except gspread.exceptions.APIError as e:
-        print_center_string(
-            colored(f"Error opening worksheet: {e}, "
-                    "please try again, Loading ..\n", "red")
-        )
+        print_styled_msg(f"Error opening worksheet: {e}, "
+                         "please try again, Loading ..\n", "red")
         time.sleep(3)
         return False
 
     except Exception as e:
-        print_center_string(
-            colored(f"An error occured: {e}, "
-                    "please try again, Loading ..\n", "red")
-        )
+        print_styled_msg(f"An error occured: {e}, "
+                         "please try again, Loading ..\n", "red")
         time.sleep(3)
         return False
 
@@ -1110,9 +1014,8 @@ def validate_selection(selection_str, available_choices):
 
     except ValueError as e:
         print()
-        print_center_string(
-            colored(f"Invalid selection: {e}, please try again\n", "red")
-        )
+        print_styled_msg(f"Invalid selection: {e}, please try again\n", "red")
+
         return False
     return selection_value
 
@@ -1160,9 +1063,7 @@ def get_valid_username(check_for_match=True):
 
         except ValueError as e:
             print("")
-            print_center_string(
-                colored(f"{e}, please try again\n", "red")
-            )
+            print_styled_msg(f"{e}, please try again\n", "red")
 
 
 def get_valid_password(hash_pass=True):
@@ -1202,9 +1103,8 @@ def get_valid_password(hash_pass=True):
 
         except ValueError as e:
             print("")
-            print_center_string(
-                colored(f"Invalid Password: {e}, please try again\n", "red")
-            )
+            print_styled_msg(
+                f"Invalid Password: {e}, please try again\n", "red")
 
 
 def get_valid_phone_num(check_for_match=True):
@@ -1247,10 +1147,8 @@ def get_valid_phone_num(check_for_match=True):
 
         except ValueError as e:
             print("")
-            print_center_string(
-                colored(f"Invalid phone number: {e}, "
-                        "please try again\n", "red")
-            )
+            print_styled_msg(f"Invalid phone number: {e}, "
+                             "please try again\n", "red")
 
 
 # ----------------------------- MAIN -------------------------------
