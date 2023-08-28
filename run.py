@@ -32,10 +32,12 @@ try:
     # Access sheet for project
     SHEET = GSPREAD_CLIENT.open("pokemon_portfolio")
 except FileNotFoundError:
-    print("Creds.json not found, please ensure file exists and is named correctly\n")
+    print("Creds.json not found, please ensure "
+          "file exists and is named correctly\n")
     sys.exit(1)  # exit due to err
 except gspread.exceptions.GSpreadException as gspread_e:
-    print(f"An error occured while initialising gspread: {gspread_e}, please press the Run Program above to try again\n")
+    print("An error occured while initialising gspread: "
+          f"{gspread_e}, please press the Run Program above to try again\n")
     sys.exit(1)  # exit due to err
 except Exception as e:
     print(f"\nAn error occured when initialising: {e}, "
@@ -97,7 +99,7 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet): 
+        if not (bss_worksheet):
             return
 
         # Set card row adding 1 to account for headings
@@ -161,9 +163,9 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):  
+        if not (bss_worksheet):
             return
-        
+
         # set card row adding 1 to account for headings
         card_row = str(validated_card_num + 1)
 
@@ -211,7 +213,7 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):  
+        if not (bss_worksheet):
             return
 
         # Get pokemon card names, numbers and user cards -
@@ -224,7 +226,7 @@ class User:
         user_collection = []
         for card, card_num, name in zip(user_cards, card_nums, card_names):
             if card == "Yes":
-                card_string = f"BS{card_num}: {name}"
+                card_string = f"B{card_num}:{name}"
                 user_collection.append(card_string)
 
         # Check if we have cards to display
@@ -232,7 +234,7 @@ class User:
         if num_cards_collected > 0:
             # Structure list of cards for display in 3 columns
             user_coll_columns = []
-            num_cols = 3
+            num_cols = 4
             for i in range(0, len(user_collection), num_cols):
                 column = user_collection[i:i + num_cols]
                 user_coll_columns.append(column)
@@ -283,7 +285,7 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):  
+        if not (bss_worksheet):
             return
 
         # Get pokemon card names, numbers and user cards -
@@ -296,7 +298,7 @@ class User:
         user_missing_cards = []
         for card, card_num, name in zip(user_cards, card_nums, card_names):
             if card == "No":
-                card_string = f"BS{card_num}: {name}"
+                card_string = f"B{card_num}:{name}"
                 user_missing_cards.append(card_string)
 
         # Check if we have cards to display
@@ -304,7 +306,7 @@ class User:
         if num_cards_missing > 0:
             # Structure list of cards for display in 3 columns
             user_coll_columns = []
-            num_cols = 3
+            num_cols = 4
             for i in range(0, len(user_missing_cards), num_cols):
                 column = user_missing_cards[i:i + num_cols]
                 user_coll_columns.append(column)
@@ -347,7 +349,7 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):  
+        if not (bss_worksheet):
             return
 
         # Get pokemon card values and user cards -
@@ -412,7 +414,7 @@ class User:
         # Add No to all cells in user column
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):  
+        if not (bss_worksheet):
             return
         update_values = [["No"] for i in range(102)]
         range_to_update = f"{self.col_letter}2:{self.col_letter}103"
@@ -667,7 +669,7 @@ def reset_password():
     if checked_phone_num == 1:  # not in use
         login_worksheet = open_worksheet("login")
         # Exit if we had an API error
-        if not (login_worksheet):  
+        if not (login_worksheet):
             display_welcome_banner()
 
         # Find the row their phone number is on and
@@ -696,7 +698,7 @@ def reset_password():
                 "with an acconut\n", "red"
             )
         )
-    else: 
+    else:
         display_welcome_banner()
 
     # Return to login menu or try again
@@ -851,14 +853,13 @@ def check_username_in_use(username):
     Returns:
         Result (int): 1 for username found
                     2 for username not found
-                    3 for API error  
-
+                    3 for API error
     """
     result = None
     login_worksheet = open_worksheet("login")
     # Exit if we had an API error
     if not (login_worksheet):
-        result = 3 
+        result = 3
         return result
 
     username_found = login_worksheet.find(username, in_column=1)
@@ -879,15 +880,15 @@ def check_phone_num_in_use(phone_num):
     Returns:
         Result (int): 1 for username found
                     2 for username not found
-                    3 for API error 
+                    3 for API error
     """
     result = None
     login_worksheet = open_worksheet("login")
     # Exit if we had an API error
     if not (login_worksheet):
-        result = 3 
+        result = 3
         return result
-    
+
     phone_num_found = login_worksheet.find(phone_num, in_column=3)
     if phone_num_found:
         result = 1
@@ -1035,6 +1036,7 @@ def add_column_to_sheet(sheet_name):
         inherit_from_before=True,
     )
 
+
 def open_worksheet(worksheet_name):
     """
     Open google worksheet and handle errors that may occur
@@ -1042,29 +1044,32 @@ def open_worksheet(worksheet_name):
     Parameters:
         worksheet_name: Name of worksheet to open
 
-    Returns: 
+    Returns:
         Opened sheet or Flase (if error occurs)
     """
     try:
         opened_worksheet = SHEET.worksheet(worksheet_name)
         return opened_worksheet
-    
+
     except gspread.exceptions.WorksheetNotFound as e:
         print_center_string(
-            colored(f"Worksheet {e} not found, please try again, Loading ...\n", "red")
+            colored(f"Worksheet {e} not found, please try again, "
+                    "Loading ...\n", "red")
         )
         time.sleep(3)
         return False
     except gspread.exceptions.APIError as e:
         print_center_string(
-            colored(f"Error opening worksheet: {e}, please try again, Loading ..\n", "red")
+            colored(f"Error opening worksheet: {e}, "
+                    "please try again, Loading ..\n", "red")
         )
         time.sleep(3)
         return False
 
     except Exception as e:
         print_center_string(
-            colored(f"An error occured: {e}, please try again, Loading ..\n", "red")
+            colored(f"An error occured: {e}, "
+                    "please try again, Loading ..\n", "red")
         )
         time.sleep(3)
         return False
@@ -1114,10 +1119,9 @@ def get_valid_username(check_for_match=True):
         check_for_match (boolean):
             Flag used to control if we check gsheets for matching username
     Returns:
-        username or 1(string/int): 
+        username or 1(string/int):
             Validated username chosen by user or 1 to indicate api error
                 API error can only occur if check_for_match is true
-            
     """
     while True:
         try:
@@ -1142,8 +1146,8 @@ def get_valid_username(check_for_match=True):
                 checked_username = check_username_in_use(username)
                 if checked_username == 1:  # Username in use
                     raise ValueError("Username aleady in use")
-                if checked_username == 3: # API err
-                    return 1  
+                if checked_username == 3:  # API err
+                    return 1
 
             return username
 
@@ -1227,10 +1231,10 @@ def get_valid_phone_num(check_for_match=True):
 
             if check_for_match:
                 checked_phone_num = check_phone_num_in_use(phone_num)
-                if checked_phone_num == 1: # Username in use
+                if checked_phone_num == 1:  # Username in use
                     raise ValueError("Phone number aleady in use")
-                if checked_phone_num == 3: # API err
-                    return 1  
+                if checked_phone_num == 3:  # API err
+                    return 1
 
             return phone_num
 
