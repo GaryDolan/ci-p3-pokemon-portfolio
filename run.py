@@ -5,6 +5,7 @@ import os
 import re
 import bcrypt
 import sys
+import time
 from google.oauth2.service_account import Credentials
 from pokemon_ascii_art import print_pokemon
 from termcolor import colored
@@ -90,7 +91,11 @@ class User:
             if validated_card_num:
                 break
 
-        bss_worksheet = SHEET.worksheet("base_set_shadowless")
+        bss_worksheet = open_worksheet("base_set_shadowless")
+        # Exit if we had an API error
+        if not (bss_worksheet): 
+            return
+
         # Set card row adding 1 to account for headings
         card_row = str(validated_card_num + 1)
 
@@ -150,7 +155,11 @@ class User:
             if validated_card_num:
                 break
 
-        bss_worksheet = SHEET.worksheet("base_set_shadowless")
+        bss_worksheet = open_worksheet("base_set_shadowless")
+        # Exit if we had an API error
+        if not (bss_worksheet):  
+            return
+        
         # set card row adding 1 to account for headings
         card_row = str(validated_card_num + 1)
 
@@ -196,7 +205,10 @@ class User:
         print_art_font("       Your  Portfolio")
         print("")
 
-        bss_worksheet = SHEET.worksheet("base_set_shadowless")
+        bss_worksheet = open_worksheet("base_set_shadowless")
+        # Exit if we had an API error
+        if not (bss_worksheet):  
+            return
 
         # Get pokemon card names, numbers and user cards -
         # (Yes/No's to indicate which cards are in their collection)
@@ -265,7 +277,10 @@ class User:
         print_art_font("         Cards  Needed")
         print("")
 
-        bss_worksheet = SHEET.worksheet("base_set_shadowless")
+        bss_worksheet = open_worksheet("base_set_shadowless")
+        # Exit if we had an API error
+        if not (bss_worksheet):  
+            return
 
         # Get pokemon card names, numbers and user cards -
         # (Yes/No's to indicate which cards are in their collection)
@@ -326,7 +341,10 @@ class User:
         print_art_font("      Portfolio  Value")
         print("")
 
-        bss_worksheet = SHEET.worksheet("base_set_shadowless")
+        bss_worksheet = open_worksheet("base_set_shadowless")
+        # Exit if we had an API error
+        if not (bss_worksheet):  
+            return
 
         # Get pokemon card values and user cards -
         # (Yes/No's to indicate which cards are in their collection)
@@ -388,47 +406,15 @@ class User:
         )
 
         # Add No to all cells in user column
-        bss_worksheet = SHEET.worksheet("base_set_shadowless")
+        bss_worksheet = open_worksheet("base_set_shadowless")
+        # Exit if we had an API error
+        if not (bss_worksheet):  
+            return
         update_values = [["No"] for i in range(102)]
         range_to_update = f"{self.col_letter}2:{self.col_letter}103"
         bss_worksheet.update(range_to_update, update_values)
 
         input("Press enter to return to main menu\n")
-
-
-def select_avail_user_option(function_to_call, function_text):
-    """
-    Used to display a list of options to the user and
-    allow them to make a selection
-
-    Parameters:
-        function_to_call (func): Function to be called if option 1 is selected
-    Returns:
-        function_text (string): Text to be shown for option 1
-
-    """
-    while True:
-        print_center_string(
-            colored(
-                "Please select option (1 or 2) from the list shown "
-                "and enter it below\n",
-                attrs=["bold", "underline"],
-            )
-        )
-
-        print("1. " + function_text)
-        print("2. Return to main menu\n")
-
-        selection = input("Enter your selection: \n")
-
-        validated_selection = validate_selection(selection, list(range(1, 3)))
-
-        if validated_selection == 1:
-            function_to_call()
-            break
-        elif validated_selection == 2:
-            # just break, as this will return the user to main menu
-            break
 
 
 # --------------------- APP LOGIC FUNCTIONS -----------------------
@@ -516,15 +502,21 @@ def account_login():
     )
 
     username = get_valid_username(False)
+    checked_username = check_username_in_use(username)
 
-    if check_username_in_use(username):
+    if checked_username == 1:
         password_attempt = get_valid_password(False)
 
         print_center_string("Logging in ....\n")
 
+        login_worksheet = open_worksheet("login")
+        bss_worksheet = open_worksheet("base_set_shadowless")
+        # Exit if we had an API error
+        if not (login_worksheet and bss_worksheet):
+            display_welcome_banner()
+
         # Find the row their username is on and
         # return the corrisponding password
-        login_worksheet = SHEET.worksheet("login")
         username_found = login_worksheet.find(username, in_column=1)
         row_num = username_found.row
         stored_hashed_pass = login_worksheet.cell(row_num, 2).value
@@ -540,7 +532,6 @@ def account_login():
 
             # get the users col number/letter and
             # create a user using this value
-            bss_worksheet = SHEET.worksheet("base_set_shadowless")
             username_found_bss = bss_worksheet.find(username, in_row=1)
             user_col_num = username_found_bss.col
             user_col_letter = bss_worksheet.cell(104, user_col_num).value
@@ -552,13 +543,15 @@ def account_login():
                 colored("Login failed, password incorrect\n", "red"))
             select_from_avail_options(account_login, "Try again")
 
-    else:
+    elif checked_username == 0:
         print_center_string(
             colored("The username entered is not associated "
                     "with an account\n", "red")
         )
 
         select_from_avail_options(account_login, "Try again")
+    else:
+        display_welcome_banner()
 
 
 def create_account():
@@ -586,22 +579,32 @@ def create_account():
         )
     )
 
-    # get new user details
+    # get new user details, if API err, return to home
     username = get_valid_username()
+    if username == 1:
+        display_welcome_banner()
+
     print_center_string(colored("Username available\n", "green"))
     password = get_valid_password()
+
     phone_num = get_valid_phone_num()
+    if phone_num == 1:
+        display_welcome_banner()
 
     print_center_string("Creating Account ....\n")
 
+    login_worksheet = open_worksheet("login")
+    bss_worksheet = open_worksheet("base_set_shadowless")
+    # Exit if we had an API error
+    if not (login_worksheet and bss_worksheet):
+        display_welcome_banner()
+
     # Store user account details
     account_details = [username, password, phone_num]
-    login_worksheet = SHEET.worksheet("login")
     login_worksheet.append_row(account_details)
 
     # Assign the user the next available column in
     # base_set_shadowless sheet and add his username
-    bss_worksheet = SHEET.worksheet("base_set_shadowless")
     next_avail_column = bss_worksheet.acell("A2").value
     bss_worksheet.update_acell(next_avail_column + "1", username)
 
@@ -654,13 +657,17 @@ def reset_password():
     )
 
     phone_num = get_valid_phone_num(False)
-
     print_center_string("Checking for account ....\n")
 
-    if check_phone_num_in_use(phone_num):
+    checked_phone_num = check_phone_num_in_use(phone_num)
+    if checked_phone_num == 1:  # not in use
+        login_worksheet = open_worksheet("login")
+        # Exit if we had an API error
+        if not (login_worksheet):  
+            display_welcome_banner()
+
         # Find the row their phone number is on and
         # return the corrisponding username
-        login_worksheet = SHEET.worksheet("login")
         phone_num_found = login_worksheet.find(phone_num, in_column=3)
         row_num = phone_num_found.row
         username = login_worksheet.cell(row_num, 1).value
@@ -678,13 +685,15 @@ def reset_password():
         print("")
         print_center_string(colored("Password has been reset\n", "green"))
 
-    else:
+    elif checked_phone_num == 0:  # In use
         print_center_string(
             colored(
                 "The phone number entered is not associated "
                 "with an acconut\n", "red"
             )
         )
+    else: 
+        display_welcome_banner()
 
     # Return to login menu or try again
     select_from_avail_options(reset_password, "Reset password again")
@@ -836,15 +845,25 @@ def check_username_in_use(username):
     Parameters:
         username (string): String to search for in gogle sheets
     Returns:
-        True or False (boolean): True if username foun, false otherwise
+        Result (int): 1 for username found
+                    2 for username not found
+                    3 for API error  
 
     """
-    login_worksheet = SHEET.worksheet("login")
+    result = None
+    login_worksheet = open_worksheet("login")
+    # Exit if we had an API error
+    if not (login_worksheet):
+        result = 3 
+        return result
+
     username_found = login_worksheet.find(username, in_column=1)
     if username_found:
-        return True
+        result = 1
+        return result
     else:
-        return False
+        result = 0
+        return result
 
 
 def check_phone_num_in_use(phone_num):
@@ -852,16 +871,26 @@ def check_phone_num_in_use(phone_num):
     Check if phone number is already stored in google sheet
 
     Parameters:
-        username (string): String to search for in gogle sheets
+        username (string): String to search for in google sheets
     Returns:
-        True or False (boolean): True if username found, false otherwise
+        Result (int): 1 for username found
+                    2 for username not found
+                    3 for API error 
     """
-    login_worksheet = SHEET.worksheet("login")
+    result = None
+    login_worksheet = open_worksheet("login")
+    # Exit if we had an API error
+    if not (login_worksheet):
+        result = 3 
+        return result
+    
     phone_num_found = login_worksheet.find(phone_num, in_column=3)
     if phone_num_found:
-        return True
+        result = 1
+        return result
     else:
-        return False
+        result = 0
+        return result
 
 
 def hash_password(password):
@@ -917,6 +946,41 @@ def select_from_avail_options(function_to_call, function_text):
             break
 
 
+def select_avail_user_option(function_to_call, function_text):
+    """
+    Used to display a list of options to the user and
+    allow them to make a selection
+
+    Parameters:
+        function_to_call (func): Function to be called if option 1 is selected
+    Returns:
+        function_text (string): Text to be shown for option 1
+
+    """
+    while True:
+        print_center_string(
+            colored(
+                "Please select option (1 or 2) from the list shown "
+                "and enter it below\n",
+                attrs=["bold", "underline"],
+            )
+        )
+
+        print("1. " + function_text)
+        print("2. Return to main menu\n")
+
+        selection = input("Enter your selection: \n")
+
+        validated_selection = validate_selection(selection, list(range(1, 3)))
+
+        if validated_selection == 1:
+            function_to_call()
+            break
+        elif validated_selection == 2:
+            # just break, as this will return the user to main menu
+            break
+
+
 # ----------------------- GSHEETS FUNCTIONS -----------------------
 
 
@@ -967,6 +1031,39 @@ def add_column_to_sheet(sheet_name):
         inherit_from_before=True,
     )
 
+def open_worksheet(worksheet_name):
+    """
+    Open google worksheet and handle errors that may occur
+
+    Parameters:
+        worksheet_name: Name of worksheet to open
+
+    Returns: 
+        Opened sheet or Flase (if error occurs)
+    """
+    try:
+        opened_worksheet = SHEET.worksheet(worksheet_name)
+        return opened_worksheet
+    
+    except gspread.exceptions.WorksheetNotFound as e:
+        print_center_string(
+            colored(f"Worksheet {e} not found, please try again, Loading ...\n", "red")
+        )
+        time.sleep(3)
+        return False
+    except gspread.exceptions.APIError as e:
+        print_center_string(
+            colored(f"Error opening worksheet: {e}, please try again, Loading ..\n", "red")
+        )
+        time.sleep(3)
+        return False
+
+    except Exception as e:
+        print_center_string(
+            colored(f"An error occured: {e}, please try again, Loading ..\n", "red")
+        )
+        time.sleep(3)
+        return False
 
 # --------------------- VALIDATION FUNCTIONS ----------------------
 
@@ -1013,13 +1110,15 @@ def get_valid_username(check_for_match=True):
         check_for_match (boolean):
             Flag used to control if we check gsheets for matching username
     Returns:
-        username (string): Validated username chosen by user
-
+        username or 1(string/int): 
+            Validated username chosen by user or 1 to indicate api error
+                API error can only occur if check_for_match is true
+            
     """
     while True:
         try:
             username = input(
-                "\nPlease enter username between 5 and 15 characters "
+                "\nPlease enter your username between 5 and 15 characters "
                 "long,\n(You may use letters, numbers, _ or -) : \n"
             )
 
@@ -1036,14 +1135,18 @@ def get_valid_username(check_for_match=True):
                                  "numbers, _ or -")
 
             if check_for_match:
-                if check_username_in_use(username):
+                checked_username = check_username_in_use(username)
+                if checked_username == 1:  # Username in use
                     raise ValueError("Username aleady in use")
+                if checked_username == 3: # API err
+                    return 1  
+
             return username
 
         except ValueError as e:
             print("")
             print_center_string(
-                colored(f"Invalid username: {e}, please try again\n", "red")
+                colored(f"{e}, please try again\n", "red")
             )
 
 
@@ -1060,7 +1163,7 @@ def get_valid_password(hash_pass=True):
     while True:
         try:
             password = input(
-                "\nPlease enter a password between 5 and 15 characters "
+                "\nPlease enter your password between 5 and 15 characters "
                 "long,\n(You may user letters, numbers, _ , - , & or !) : \n"
             )
 
@@ -1119,8 +1222,11 @@ def get_valid_phone_num(check_for_match=True):
                 raise ValueError("Please only use numbers")
 
             if check_for_match:
-                if check_phone_num_in_use(phone_num):
+                checked_phone_num = check_phone_num_in_use(phone_num)
+                if checked_phone_num == 1: # Username in use
                     raise ValueError("Phone number aleady in use")
+                if checked_phone_num == 3: # API err
+                    return 1  
 
             return phone_num
 
