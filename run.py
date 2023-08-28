@@ -79,7 +79,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("               Add  a  card")
+        print_art_font("               Add  a  card", "yellow")
         print_pokemon("19")
         print("\n")
 
@@ -145,7 +145,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("       Remove  a  Card")
+        print_art_font("       Remove  a  Card", "yellow")
         print_pokemon("28")
         print("\n")
 
@@ -208,7 +208,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("       Your  Portfolio")
+        print_art_font("       Your  Portfolio", "yellow")
         print("")
 
         bss_worksheet = open_worksheet("base_set_shadowless")
@@ -280,7 +280,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("         Cards  Needed")
+        print_art_font("         Cards  Needed", "yellow")
         print("")
 
         bss_worksheet = open_worksheet("base_set_shadowless")
@@ -344,7 +344,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("      Portfolio  Value")
+        print_art_font("      Portfolio  Value", "yellow")
         print("")
 
         bss_worksheet = open_worksheet("base_set_shadowless")
@@ -378,7 +378,7 @@ class User:
         )
 
         if portfolio_value > 0:
-            print_art_font(f"                       $  {portfolio_value}")
+            print_art_font(f"                       $  {portfolio_value}", "white")
         else:
             print_center_string(
                 colored(
@@ -401,7 +401,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("     Portfolio Deleted")
+        print_art_font("     Portfolio Deleted", "yellow")
         print_pokemon("50")
         print_center_string(
             colored(
@@ -437,7 +437,13 @@ def display_welcome_banner():
     """
     clear_terminal()
 
-    print_art_font("Pokemon Portfolio")
+    print_art_font("Pokemon Portfolio", "yellow")
+    print()    
+    print_center_string(
+        colored(
+            "Collect and appraise your base set pokemon cards\n", "yellow"
+        )
+    )
 
     print_pokemon("pikachu_banner")
 
@@ -495,7 +501,7 @@ def account_login():
     """
 
     clear_terminal()
-    print_art_font("       Account  Login")
+    print_art_font("       Account  Login", "yellow")
     print_pokemon("10")
 
     print("\n\n")
@@ -574,7 +580,7 @@ def create_account():
         None
     """
     clear_terminal()
-    print_art_font(" Account Creation")
+    print_art_font(" Account Creation", "yellow")
     print_pokemon("44")
 
     print("\n\n")
@@ -651,7 +657,7 @@ def reset_password():
     """
     clear_terminal()
 
-    print_art_font("      Password  Reset")
+    print_art_font("      Password  Reset", "yellow")
     print_pokemon("63")
 
     print("\n\n")
@@ -717,7 +723,7 @@ def main_menu(human_user):
     """
     while True:
         clear_terminal()
-        print_art_font("                Main  Menu")
+        print_art_font("                Main  Menu", "yellow")
         print_pokemon("4")
 
         print_center_string(
@@ -760,7 +766,7 @@ def main_menu(human_user):
 
         elif validated_selection == 6:
             clear_terminal()
-            print_art_font("      Delete  Portfolio")
+            print_art_font("      Delete  Portfolio", "yellow")
             print_pokemon("29")
             while True:
                 print_center_string(
@@ -795,7 +801,7 @@ def main_menu(human_user):
 # ----------------------- HELPER FUNCTIONS ------------------------
 
 
-def print_art_font(string):
+def print_art_font(string, color):
     """
     Uses pyfiglet library to convert given string into an art font style
 
@@ -807,13 +813,14 @@ def print_art_font(string):
     font = pyf.Figlet(font="big", width=110)
     msg = font.renderText(string)
     msg = msg.rstrip()
-    print(msg)
+    
+    print (colored(msg,color))
 
 
 def print_center_string(string):
     """
     Centers and prints the given text to the terminal
-    If text contains ascii escape codes for color etc
+    If text contains ascii escape codes for colour etc
     the function will stip these out for calculating
     spacing but will still print original text
 
