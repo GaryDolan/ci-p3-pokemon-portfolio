@@ -116,13 +116,13 @@ class User:
 
             print_pokemon(str(validated_card_num))
 
-            select_avail_user_option(self.add_card, "Add another card")
+            select_from_avail_options(self.add_card, "Add another card", True)
 
         else:
             print_styled_msg("This card is already in your collection\n",
                              "red")
 
-            select_avail_user_option(self.add_card, "Add another card")
+            select_from_avail_options(self.add_card, "Add another card", True)
 
     def remove_card(self):
         """
@@ -171,13 +171,15 @@ class User:
 
             print_pokemon(str(validated_card_num))
 
-            select_avail_user_option(self.remove_card, "Remove another card")
+            select_from_avail_options(
+                self.remove_card, "Remove another card", True)
 
         else:
             print_styled_msg(
                 "You do not have this card in your collection\n", "red")
 
-            select_avail_user_option(self.remove_card, "Remove another card")
+            select_from_avail_options(
+                self.remove_card, "Remove another card", True)
 
     def view_portfolio(self):
         """
@@ -489,6 +491,7 @@ def account_login():
             main_menu(human_user)
         else:
             print_styled_msg("Login failed, password incorrect\n", "red")
+            sel
             select_from_avail_options(account_login, "Try again")
 
     elif checked_username == 0:
@@ -830,15 +833,18 @@ def hash_password(password):
     return hashed_pass
 
 
-def select_from_avail_options(function_to_call, function_text):
+def select_from_avail_options(
+        function_to_call, function_text, main_menu=False):
     """
     Used to display a list of options to the user
     and allow them to make a selection
 
     Parameters:
         function_to_call (func): Function to be called if option 1 is selected
-    Returns:
         function_text (string): Text to be shown for option 1
+        main_menu (boolean):
+            Flag to indicate if we want to return to the main menu
+    Returns: None:
 
     """
     while True:
@@ -846,7 +852,10 @@ def select_from_avail_options(function_to_call, function_text):
                          "and enter it below\n", "white")
 
         print("1. " + function_text)
-        print("2. Return to home page\n")
+        if not (main_menu):
+            print("2. Return to home page\n")
+        else:
+            print("2. Return to main menu\n")
 
         selection = input("Enter your selection: \n")
 
@@ -856,38 +865,12 @@ def select_from_avail_options(function_to_call, function_text):
             function_to_call()
             break
         elif validated_selection == 2:
-            display_welcome_banner()
-            break
-
-
-def select_avail_user_option(function_to_call, function_text):
-    """
-    Used to display a list of options to the user and
-    allow them to make a selection
-
-    Parameters:
-        function_to_call (func): Function to be called if option 1 is selected
-    Returns:
-        function_text (string): Text to be shown for option 1
-
-    """
-    while True:
-        print_styled_msg("Please select option (1 or 2) from the list shown "
-                         "and enter it below\n", "white")
-
-        print("1. " + function_text)
-        print("2. Return to main menu\n")
-
-        selection = input("Enter your selection: \n")
-
-        validated_selection = validate_selection(selection, list(range(1, 3)))
-
-        if validated_selection == 1:
-            function_to_call()
-            break
-        elif validated_selection == 2:
-            # just break, as this will return the user to main menu
-            break
+            if not (main_menu):
+                print("2. Return to main menu\n")
+                display_welcome_banner()
+                break
+            else:
+                break  # Returns to main menu
 
 
 def print_styled_msg(msg, color):
