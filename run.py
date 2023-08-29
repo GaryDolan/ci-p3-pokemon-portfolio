@@ -362,8 +362,8 @@ class User:
         update_values = [["No"] for i in range(102)]
         range_to_update = f"{self.col_letter}2:{self.col_letter}103"
         bss_worksheet.update(range_to_update, update_values)
-        
-        clear_terminal()  
+
+        clear_terminal()
         print_art_font("     Portfolio Deleted", "big", "yellow")
         print_pokemon("50")
         print_styled_msg("Your Portfolio has been successfully deleted\n",
