@@ -552,7 +552,6 @@ def account_login():
             main_menu(human_user)
         else:
             print_styled_msg("Login failed, password incorrect\n", "red")
-            sel
             select_from_avail_options(account_login, "Try again")
 
     elif checked_username == 0:
@@ -708,10 +707,10 @@ def main_menu(human_user):
         print_art_font("                Main  Menu", "big", "yellow")
         print_pokemon("4")
 
-        print_styled_msg("Please select an option (1-6) from the list shown"
-                         "and enter it below\n", "white")
-
         while True:
+            print_styled_msg("Please select an option (1-6) from the"
+                             "list shown and enter it below\n", "white")
+
             print("1. Add a card to your portfolio")
             print("2. Remove a card from your portfolio")
             print("3. View portfolio")
