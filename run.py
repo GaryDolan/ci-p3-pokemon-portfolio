@@ -34,15 +34,15 @@ try:
 except FileNotFoundError:
     print("Creds.json not found, please ensure "
           "file exists and is named correctly\n")
-    sys.exit(1)  # exit due to err
+    sys.exit(1)  # Exit due to err
 except gspread.exceptions.GSpreadException as gspread_e:
     print("An error occured while initialising gspread: "
           f"{gspread_e}, please press the Run Program above to try again\n")
-    sys.exit(1)  # exit due to err
+    sys.exit(1)
 except Exception as err:
     print(f"\nAn error occured when initialising: {err}, "
           "please press the Run Program above to try again\n")
-    sys.exit(1)  # exit due to err
+    sys.exit(1)
 
 
 # --------------------------- CLASSES -----------------------------
@@ -79,7 +79,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("               Add  a  card", "yellow")
+        print_art_font("               Add  a  card", "big", "yellow")
         print_pokemon("19")
         print("\n")
 
@@ -136,7 +136,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("       Remove  a  Card", "yellow")
+        print_art_font("       Remove  a  Card", "big", "yellow")
         print_pokemon("28")
         print("\n")
 
@@ -157,7 +157,7 @@ class User:
         if not (bss_worksheet):
             return
 
-        # set card row adding 1 to account for headings
+        # Set card row adding 1 to account for headings
         card_row = str(validated_card_num + 1)
 
         # Check if card is card is in collection (== "Yes") and remove it
@@ -192,7 +192,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("       Your  Portfolio", "yellow")
+        print_art_font("       Your  Portfolio", "big", "yellow")
         print("")
 
         bss_worksheet = open_worksheet("base_set_shadowless")
@@ -225,7 +225,7 @@ class User:
 
             print(tabulate(user_coll_columns, tablefmt="fancy_grid"))
 
-            # check how many cards we show and display % complete
+            # Check how many cards we show and display % complete
             percentage = round((num_cards_collected / len(card_nums) * 100))
             if percentage == 100:
                 print_styled_msg(f"Congratulation your set is {percentage}%"
@@ -251,7 +251,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("         Cards  Needed", "yellow")
+        print_art_font("         Cards  Needed", "big", "yellow")
         print("")
 
         bss_worksheet = open_worksheet("base_set_shadowless")
@@ -284,7 +284,7 @@ class User:
 
             print(tabulate(user_coll_columns, tablefmt="fancy_grid"))
 
-            # check how many cards we show and display % complete
+            # Check how many cards we show and display % complete
             percentage = round((num_cards_missing / len(card_nums) * 100))
             print_styled_msg(f"You are missing {percentage}%, "
                              "of available cards in this set\n", "red")
@@ -306,7 +306,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("      Portfolio  Value", "yellow")
+        print_art_font("      Portfolio  Value", "big", "yellow")
         print("")
 
         bss_worksheet = open_worksheet("base_set_shadowless")
@@ -336,7 +336,7 @@ class User:
 
         if portfolio_value > 0:
             print_art_font(f"                       $  {portfolio_value} ",
-                           "white")
+                           "big", "white")
         else:
             print_styled_msg("You do not have any pokemon cards "
                              "in your portfolio\n", "red")
@@ -355,7 +355,7 @@ class User:
         """
 
         clear_terminal()
-        print_art_font("     Portfolio Deleted", "yellow")
+        print_art_font("     Portfolio Deleted", "big", "yellow")
         print_pokemon("50")
         print_styled_msg("Your Portfolio has been successfully deleted\n",
                          "green")
@@ -371,7 +371,68 @@ class User:
 
         input("Press enter to return to main menu\n")
 
+    def card_search(self):
+        """
+        Allows a user to search for, and view a cards details
+            using the card number
 
+        Parameters:
+            self (object): An instance of the User class
+        Returns:
+            None
+        """
+        clear_terminal()
+        print_art_font("             Card  search", "big", "yellow")
+        print_pokemon("35")
+
+        # Get card number from user and validate
+        while True:
+            card_num_selection = input(
+                "\nEnter the card number (1-102) that you "
+                "would like to search for: \n"
+            )
+
+            validated_card_num = validate_selection(
+                card_num_selection, list(range(1, 103))
+            )
+
+            if validated_card_num:
+                break
+        print_center_string("Loading card details....\n")
+        bss_worksheet = open_worksheet("base_set_shadowless")
+        # Exit if we had an API error
+        if not (bss_worksheet):
+            return
+
+        # Get all the cards details
+        card_row = validated_card_num + 1
+
+        card_details = (bss_worksheet.row_values(card_row)[1:6])
+        card_name = card_details[0]
+        card_rarity = card_details[1]
+        card_num = card_details[2]
+        card_price = card_details[3]
+        card_in_collection = card_details[4]
+
+        # Store details in a dictionary in a list for use with tabulate
+        card_details_formatted = [
+            {
+                "Card No.": "BS" + str(card_num),
+                "Card Name": card_name,
+                "Card Rarity": card_rarity,
+                "Card Price": "$" + card_price,
+                "In collection": card_in_collection
+            }
+        ]
+
+        # Display card image and details
+        clear_terminal()
+        print_art_font(f"{card_name}", "big", "yellow")
+        print_pokemon(f"{card_num}")
+        print(tabulate
+              (card_details_formatted, headers="keys", tablefmt="fancy_grid"))
+
+        select_from_avail_options(self.card_search, "Search again", True)
 # --------------------- APP LOGIC FUNCTIONS -----------------------
 
 
@@ -386,7 +447,7 @@ def display_welcome_banner():
     """
     clear_terminal()
 
-    print_art_font("Pokemon Portfolio", "yellow")
+    print_art_font("Pokemon Portfolio", "big", "yellow")
     print()
     print_center_string(
         colored(
@@ -445,10 +506,10 @@ def account_login():
     """
 
     clear_terminal()
-    print_art_font("       Account  Login", "yellow")
+    print_art_font("       Account  Login", "big", "yellow")
     print_pokemon("10")
 
-    print("\n\n")
+    print("")
     print_styled_msg("Please enter your username and password below to login "
                      "(both are case sensitive)\n", "white")
 
@@ -477,11 +538,11 @@ def account_login():
         stored_hashed_pass = stored_hashed_pass[2:-1].encode("utf-8")
         password_attempt_bytes = password_attempt.encode()
 
-        # check if password entered matches
+        # Check if password entered matches
         if bcrypt.checkpw(password_attempt_bytes, stored_hashed_pass):
             print_styled_msg("Login Successful\n", "green")
 
-            # get the users col number/letter and
+            # Get the users col number/letter and
             # create a user using this value
             username_found_bss = bss_worksheet.find(username, in_row=1)
             user_col_num = username_found_bss.col
@@ -517,14 +578,14 @@ def create_account():
         None
     """
     clear_terminal()
-    print_art_font(" Account Creation", "yellow")
+    print_art_font(" Account Creation", "big", "yellow")
     print_pokemon("44")
 
-    print("\n\n")
+    print("")
     print_styled_msg("Please follow the steps below to create an account\n",
                      "white")
 
-    # get new user details, if API err, return to home
+    # Get new user details, if API err, return to home
     username = get_valid_username()
     if username == 1:
         display_welcome_banner()
@@ -553,7 +614,7 @@ def create_account():
     next_avail_column = bss_worksheet.acell("A2").value
     bss_worksheet.update_acell(next_avail_column + "1", username)
 
-    # add empty collection ("No's")
+    # Add empty collection ("No's")
     update_values = [["No"] for i in range(102)]
     range_to_update = f"{next_avail_column}2:{next_avail_column}103"
 
@@ -588,10 +649,10 @@ def reset_password():
     """
     clear_terminal()
 
-    print_art_font("      Password  Reset", "yellow")
+    print_art_font("      Password  Reset", "big", "yellow")
     print_pokemon("63")
 
-    print("\n\n")
+    print("")
     print_styled_msg(
         "Please follow the steps below to reset your password\n", "white")
 
@@ -599,7 +660,7 @@ def reset_password():
     print_center_string("Checking for account ....\n")
 
     checked_phone_num = check_phone_num_in_use(phone_num)
-    if checked_phone_num == 1:  # not in use
+    if checked_phone_num == 1:  # Not in use
         login_worksheet = open_worksheet("login")
         # Exit if we had an API error
         if not (login_worksheet):
@@ -644,7 +705,7 @@ def main_menu(human_user):
     """
     while True:
         clear_terminal()
-        print_art_font("                Main  Menu", "yellow")
+        print_art_font("                Main  Menu", "big", "yellow")
         print_pokemon("4")
 
         print_styled_msg("Please select an option (1-6) from the list shown"
@@ -656,12 +717,13 @@ def main_menu(human_user):
             print("3. View portfolio")
             print("4. View cards needed to complete collection")
             print("5. Appraise portfolio")
-            print("6. Delete portfolio\n")
+            print("6. Delete portfolio")
+            print("7. Search for card\n")
 
             menu_selection = input("Enter your selection: \n")
 
             validated_selection = validate_selection(
-                menu_selection, list(range(1, 7)))
+                menu_selection, list(range(1, 8)))
 
             if validated_selection:
                 break
@@ -683,7 +745,7 @@ def main_menu(human_user):
 
         elif validated_selection == 6:
             clear_terminal()
-            print_art_font("      Delete  Portfolio", "yellow")
+            print_art_font("      Delete  Portfolio", "big", "yellow")
             print_pokemon("29")
             while True:
                 print_styled_msg("Please select an option (1 or 2) from the "
@@ -704,6 +766,8 @@ def main_menu(human_user):
                     break
                 elif confirm_selection_validated == 2:
                     break
+        elif validated_selection == 7:
+            human_user.card_search()
 
 
 def select_from_avail_options(
@@ -749,7 +813,7 @@ def select_from_avail_options(
 # ----------------------- HELPER FUNCTIONS ------------------------
 
 
-def print_art_font(string, color):
+def print_art_font(string, font, color):
     """
     Uses pyfiglet library to convert given string into an art font style
     Prints sting in selected colour
@@ -757,10 +821,11 @@ def print_art_font(string, color):
     Parameters:
         string (string): Text to be converted
         color (string): Colour to print converted text
+        font (string): Font to print in
     Returns:
         None
     """
-    font = pyf.Figlet(font="big", width=110)
+    font = pyf.Figlet(font=font, width=110)
     msg = font.renderText(string)
     msg = msg.rstrip()
 
@@ -866,7 +931,7 @@ def hash_password(password):
     salt = bcrypt.gensalt()
     hashed_pass = bcrypt.hashpw(password.encode(), salt)
 
-    # retured as strings for storage in gsheets
+    # Retured as strings for storage in gsheets
     hashed_pass = str(hashed_pass)
 
     return hashed_pass
@@ -901,7 +966,7 @@ def increment_gsheet_column_value(column):
         incremented_col (string): Value of the next column
 
     """
-    # use in the case where we reach Z and need to move to AA
+    # Use in the case where we reach Z and need to move to AA
     if column == "":
         return "A"
 
@@ -909,7 +974,7 @@ def increment_gsheet_column_value(column):
     other_chars = column[:-1]
 
     if last_char_in_column == "Z":
-        # call this function again passing in other_chars
+        # Call this function again passing in other_chars
         # to update the letters before the Z and change the Z to A
         return increment_gsheet_column_value(other_chars) + "A"
     else:
