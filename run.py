@@ -708,7 +708,7 @@ def main_menu(human_user):
         print_pokemon("4")
 
         while True:
-            print_styled_msg("Please select an option (1-6) from the"
+            print_styled_msg("Please select an option (1-8) from the"
                              "list shown and enter it below\n", "white")
 
             print("1. Add a card to your portfolio")
@@ -717,12 +717,13 @@ def main_menu(human_user):
             print("4. View cards needed to complete collection")
             print("5. Appraise portfolio")
             print("6. Delete portfolio")
-            print("7. Search for card\n")
+            print("7. Search for card")
+            print("8. Log out\n")
 
             menu_selection = input("Enter your selection: \n")
 
             validated_selection = validate_selection(
-                menu_selection, list(range(1, 8)))
+                menu_selection, list(range(1, 9)))
 
             if validated_selection:
                 break
@@ -767,6 +768,10 @@ def main_menu(human_user):
                     break
         elif validated_selection == 7:
             human_user.card_search()
+        elif validated_selection == 8:
+            print_styled_msg("Logging out...", "white")
+            time.sleep(2)
+            main()
 
 
 def select_from_avail_options(
