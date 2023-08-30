@@ -32,7 +32,7 @@ try:
     # Access sheet for project
     SHEET = GSPREAD_CLIENT.open("pokemon_portfolio")
 except FileNotFoundError:
-    print("Creds.json not found, please ensure "
+    print("creds.json not found, please ensure "
           "file exists and is named correctly\n")
     sys.exit(1)  # Exit due to err
 except gspread.exceptions.GSpreadException as gspread_e:
@@ -307,7 +307,6 @@ class User:
 
         clear_terminal()
         print_art_font("      Portfolio  Value", "big", "yellow")
-        print("")
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
@@ -330,9 +329,9 @@ class User:
             2,
         )
 
-        print_pokemon("46")
+        print_pokemon("51")
         print_styled_msg(f"Your pokemon portfolio value is, "
-                         f"${portfolio_value}\n", "green")
+                         f"${portfolio_value}", "green")
 
         if portfolio_value > 0:
             print_art_font(f"                       $  {portfolio_value} ",
@@ -407,7 +406,7 @@ class User:
         # Get all the cards details
         card_row = validated_card_num + 1
 
-        card_details = (bss_worksheet.row_values(card_row)[1:6])
+        card_details = bss_worksheet.row_values(card_row)[1:6]
         card_name = card_details[0]
         card_rarity = card_details[1]
         card_num = card_details[2]
@@ -427,11 +426,12 @@ class User:
 
         # Display card image and details
         clear_terminal()
-        print_art_font(f"{card_name}", "big", "yellow")
+        print_art_font(f"{card_name}", "small", "yellow")
         print_pokemon(f"{card_num}")
         print(tabulate
-              (card_details_formatted, headers="keys", tablefmt="fancy_grid"))
+              (card_details_formatted, headers="keys", tablefmt="github"))
 
+        input("Press enter to contine\n")
         select_from_avail_options(self.card_search, "Search again", True)
 # --------------------- APP LOGIC FUNCTIONS -----------------------
 
@@ -452,7 +452,7 @@ def display_welcome_banner():
     print_center_string(
         colored(
             "Manage and appraise your base set pokemon"
-            " card collection\n", "yellow"
+            " card collection", "yellow"
         )
     )
 
@@ -473,7 +473,7 @@ def login_options():
     """
     while True:
         print_styled_msg("Please select an option (1-3) from the list "
-                         "shown and enter it below\n", "white")
+                         "shown and enter it below", "white")
 
         print("1. Log into your account")
         print("2. Create an account")
@@ -510,9 +510,8 @@ def account_login():
     print_art_font("       Account  Login", "big", "yellow")
     print_pokemon("10")
 
-    print("")
     print_styled_msg("Please enter your username and password below to login "
-                     "(both are case sensitive)\n", "white")
+                     "(both are case sensitive)", "white")
 
     username = get_valid_username(False)
     checked_username = check_username_in_use(username)
@@ -719,7 +718,7 @@ def main_menu(human_user):
             print("5. Appraise portfolio")
             print("6. Delete portfolio")
             print("7. Search for card")
-            print("8. Log out\n")
+            print("8. Log out")
 
             menu_selection = input("Enter your selection: \n")
 
