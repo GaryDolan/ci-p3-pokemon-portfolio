@@ -431,7 +431,7 @@ class User:
         print(tabulate
               (card_details_formatted, headers="keys", tablefmt="github"))
 
-        input("Press enter to contine\n")
+        input("Press enter to continue\n")
         select_from_avail_options(self.card_search, "Search again", True)
 # --------------------- APP LOGIC FUNCTIONS -----------------------
 
@@ -684,7 +684,7 @@ def reset_password():
 
     elif checked_phone_num == 0:  # In use
         print_styled_msg("The phone number entered is not associated "
-                         "with an acconut\n", "red")
+                         "with an account\n", "red")
     else:
         display_welcome_banner()
 
@@ -709,7 +709,7 @@ def main_menu(human_user):
 
         while True:
             print_styled_msg("Please select an option (1-8) from the"
-                             "list shown and enter it below\n", "white")
+                             " list shown and enter it below\n", "white")
 
             print("1. Add a card to your portfolio")
             print("2. Remove a card from your portfolio")
@@ -751,7 +751,7 @@ def main_menu(human_user):
                 print_styled_msg("Please select an option (1 or 2) from the "
                                  "list shown and enter it below\n", "white")
 
-                print_styled_msg("CAUTION, selecting option 1 this will delete"
+                print_styled_msg("CAUTION, selecting option 1 will delete"
                                  " all cards from your portfolio\n", "red")
 
                 print("1. Yes delete my portfolio")
