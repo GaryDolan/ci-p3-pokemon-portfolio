@@ -749,7 +749,7 @@ def main_menu(human_user):
             print_pokemon("29")
             while True:
                 print_styled_msg("Please select an option (1 or 2) from the "
-                                 "list shown and enter it below\n\n", "white")
+                                 "list shown and enter it below\n", "white")
 
                 print_styled_msg("CAUTION, selecting option 1 this will delete"
                                  " all cards from your portfolio\n", "red")
