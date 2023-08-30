@@ -451,7 +451,8 @@ def display_welcome_banner():
     print()
     print_center_string(
         colored(
-            "Collect and appraise your base set pokemon cards\n", "yellow"
+            "Manage and appraise your base set pokemon"
+            " card collection\n", "yellow"
         )
     )
 

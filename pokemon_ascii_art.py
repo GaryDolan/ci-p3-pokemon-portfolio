@@ -1,8 +1,6 @@
-"""This module provides a function to print pokemon ascii art """
+"""This module provides the ability to print pokemon ascii art """
 
-
-def print_pokemon(number):
-    pokemon_art = {
+pokemon_art = {
         "pikachu_banner": r"""
 
                     ⠈⢿⣿⣷⡖⠦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣶⣭⣿⠀⠀⠀⠀
@@ -2435,5 +2433,16 @@ def print_pokemon(number):
         """,
     }
 
-    selected_art = pokemon_art[number]
+
+def print_pokemon(string):
+    """
+    Prints pokemon art
+
+    Paramenters:
+        string (string): Key associated with the value to be printed
+
+    Returns: None
+
+    """
+    selected_art = pokemon_art[string]
     print(selected_art)

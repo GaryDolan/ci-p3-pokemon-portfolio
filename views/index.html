@@ -8,6 +8,7 @@
             rows: 45
         });
         term.open(document.getElementById('terminal'));
+        term.writeln('Loading Application....');
 
         var ws = new WebSocket(location.protocol.replace('http', 'ws') + '//' + location.hostname + (location.port ? (
             ':' + location.port) : '') + '/');
