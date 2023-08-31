@@ -105,23 +105,31 @@ class User:
         # Set card row adding 1 to account for headings
         card_row = str(validated_card_num + 1)
 
-        # Check if card is not in collection (== "No") and ad it
-        if bss_worksheet.cell(card_row, self.col_number).value == "No":
-            bss_worksheet.update_cell(card_row, self.col_number, "Yes")
+        try:
+            # Check if card is not in collection (== "No") and ad it
+            if bss_worksheet.cell(card_row, self.col_number).value == "No":
+                bss_worksheet.update_cell(card_row, self.col_number, "Yes")
 
-            cardname = bss_worksheet.cell(card_row, 2).value
-            clear_terminal()
-            print_styled_msg(f"You have successfully added {cardname}, "
-                             f"card No.{validated_card_num}\n", "green")
+                cardname = bss_worksheet.cell(card_row, 2).value
+                clear_terminal()
+                print_styled_msg(f"You have successfully added {cardname}, "
+                                 f"card No.{validated_card_num}\n", "green")
 
-            print_pokemon(str(validated_card_num))
+                print_pokemon(str(validated_card_num))
 
-            select_from_avail_options(self.add_card, "Add another card", True)
+                select_from_avail_options(
+                    self.add_card, "Add another card", True)
 
-        else:
-            print_styled_msg("This card is already in your collection\n",
-                             "red")
+            else:
+                print_styled_msg("This card is already in your collection\n",
+                                 "red")
 
+                select_from_avail_options(
+                    self.add_card, "Add another card", True)
+
+        except Exception as e:
+            print_styled_msg(f"Error: {e}, "
+                             "please try again, later\n", "red")
             select_from_avail_options(self.add_card, "Add another card", True)
 
     def remove_card(self):
@@ -160,24 +168,30 @@ class User:
         # Set card row adding 1 to account for headings
         card_row = str(validated_card_num + 1)
 
-        # Check if card is card is in collection (== "Yes") and remove it
-        if bss_worksheet.cell(card_row, self.col_number).value == "Yes":
-            bss_worksheet.update_cell(card_row, self.col_number, "No")
+        try:
+            # Check if card is card is in collection (== "Yes") and remove it
+            if bss_worksheet.cell(card_row, self.col_number).value == "Yes":
+                bss_worksheet.update_cell(card_row, self.col_number, "No")
 
-            cardname = bss_worksheet.cell(card_row, 2).value
-            clear_terminal()
-            print_styled_msg(f"You have successfully removed {cardname}, "
-                             f"card No.{validated_card_num}\n", "green")
+                cardname = bss_worksheet.cell(card_row, 2).value
+                clear_terminal()
+                print_styled_msg(f"You have successfully removed {cardname}, "
+                                 f"card No.{validated_card_num}\n", "green")
 
-            print_pokemon(str(validated_card_num))
+                print_pokemon(str(validated_card_num))
 
-            select_from_avail_options(
-                self.remove_card, "Remove another card", True)
+                select_from_avail_options(
+                    self.remove_card, "Remove another card", True)
 
-        else:
-            print_styled_msg(
-                "You do not have this card in your collection\n", "red")
+            else:
+                print_styled_msg(
+                    "You do not have this card in your collection\n", "red")
 
+                select_from_avail_options(
+                    self.remove_card, "Remove another card", True)
+        except Exception as e:
+            print_styled_msg(f"Error: {e}, "
+                             "please try again, later\n", "red")
             select_from_avail_options(
                 self.remove_card, "Remove another card", True)
 
@@ -406,33 +420,41 @@ class User:
         # Get all the cards details
         card_row = validated_card_num + 1
 
-        card_details = bss_worksheet.row_values(card_row)[1:6]
-        card_name = card_details[0]
-        card_rarity = card_details[1]
-        card_num = card_details[2]
-        card_price = card_details[3]
-        card_in_collection = card_details[4]
+        try:
+            card_details = bss_worksheet.row_values(card_row)[1:6]
+            card_name = card_details[0]
+            card_rarity = card_details[1]
+            card_num = card_details[2]
+            card_price = card_details[3]
+            card_in_collection = card_details[4]
 
-        # Store details in a dictionary in a list for use with tabulate
-        card_details_formatted = [
-            {
-                "Card No.": "BS" + str(card_num),
-                "Card Name": card_name,
-                "Card Rarity": card_rarity,
-                "Card Price": "$" + card_price,
-                "In collection": card_in_collection
-            }
-        ]
+            # Store details in a dictionary in a list for use with tabulate
+            card_details_formatted = [
+                {
+                    "Card No.": "BS" + str(card_num),
+                    "Card Name": card_name,
+                    "Card Rarity": card_rarity,
+                    "Card Price": "$" + card_price,
+                    "In collection": card_in_collection
+                }
+            ]
 
-        # Display card image and details
-        clear_terminal()
-        print_art_font(f"{card_name}", "small", "yellow")
-        print_pokemon(f"{card_num}")
-        print(tabulate
-              (card_details_formatted, headers="keys", tablefmt="github"))
+            # Display card image and details
+            clear_terminal()
+            print_art_font(f"{card_name}", "small", "yellow")
+            print_pokemon(f"{card_num}")
+            print(tabulate(
+                card_details_formatted, headers="keys", tablefmt="github"))
 
-        input("Press enter to continue\n")
-        select_from_avail_options(self.card_search, "Search again", True)
+            input("Press enter to continue\n")
+            select_from_avail_options(self.card_search, "Search again", True)
+
+        except Exception as e:
+            print_styled_msg(f"Error: {e}, "
+                             "please try again, later\n", "red")
+            select_from_avail_options(self.card_search, "Search again", True)
+
+
 # --------------------- APP LOGIC FUNCTIONS -----------------------
 
 
