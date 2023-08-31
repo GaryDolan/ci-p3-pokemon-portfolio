@@ -1,15 +1,15 @@
 # ------------------------- LIBRARY IMPORTS ---------------------------
-import gspread
-import pyfiglet as pyf
 import os
 import re
-import bcrypt
 import sys
 import time
+import gspread
+import pyfiglet as pyf
+import bcrypt
 from google.oauth2.service_account import Credentials
-from pokemon_ascii_art import print_pokemon
 from termcolor import colored
 from tabulate import tabulate
+from pokemon_ascii_art import print_pokemon
 
 # ---------------------------- API SETUP ------------------------------
 # Specify what parts of the google account the user has access to
@@ -36,11 +36,11 @@ except FileNotFoundError:
           "file exists and is named correctly\n")
     sys.exit(1)  # Exit due to err
 except gspread.exceptions.GSpreadException as gspread_e:
-    print("An error occured while initialising gspread: "
+    print("An error occurred while initializing gspread: "
           f"{gspread_e}, please press the Run Program above to try again\n")
     sys.exit(1)
 except Exception as err:
-    print(f"\nAn error occured when initialising: {err}, "
+    print(f"\nAn error occurred when initializing: {err}, "
           "please press the Run Program above to try again\n")
     sys.exit(1)
 
@@ -99,7 +99,7 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):
+        if not bss_worksheet:
             return
 
         # Set card row adding 1 to account for headings
@@ -154,7 +154,7 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):
+        if not bss_worksheet:
             return
 
         # Set card row adding 1 to account for headings
@@ -197,7 +197,7 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):
+        if not bss_worksheet:
             return
 
         # Get pokemon card names, numbers and user cards -
@@ -256,7 +256,7 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):
+        if not bss_worksheet:
             return
 
         # Get pokemon card names, numbers and user cards -
@@ -310,7 +310,7 @@ class User:
 
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):
+        if not bss_worksheet:
             return
 
         # Get pokemon card values and user cards -
@@ -356,7 +356,7 @@ class User:
         # Add No to all cells in user column
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):
+        if not bss_worksheet:
             return
         update_values = [["No"] for i in range(102)]
         range_to_update = f"{self.col_letter}2:{self.col_letter}103"
@@ -400,7 +400,7 @@ class User:
         print_center_string("Loading card details....\n")
         bss_worksheet = open_worksheet("base_set_shadowless")
         # Exit if we had an API error
-        if not (bss_worksheet):
+        if not bss_worksheet:
             return
 
         # Get all the cards details
@@ -463,8 +463,8 @@ def display_welcome_banner():
 
 def login_options():
     """
-    Displays the login opitions to user.
-    Takes user selection, validates and calls appropiate function.
+    Displays the login options to user.
+    Takes user selection, validates and calls appropriate function.
 
     Parameters:
         None
@@ -528,7 +528,7 @@ def account_login():
             display_welcome_banner()
 
         # Find the row their username is on and
-        # return the corrisponding password
+        # return the corresponding password
         username_found = login_worksheet.find(username, in_column=1)
         row_num = username_found.row
         stored_hashed_pass = login_worksheet.cell(row_num, 2).value
@@ -624,7 +624,7 @@ def create_account():
     bss_worksheet.update_acell(next_avail_column + "104", next_avail_column)
 
     # Increment the next_avail_column stored in gsheets, and add a new column
-    # to ensure were always ready and hava a column for next account creation
+    # to ensure were always ready and have a column for next account creation
     bss_worksheet.update_acell(
         "A2", increment_gsheet_column_value(next_avail_column))
     add_column_to_sheet("base_set_shadowless")
@@ -666,7 +666,7 @@ def reset_password():
             display_welcome_banner()
 
         # Find the row their phone number is on and
-        # return the corrisponding username
+        # return the corresponding username
         phone_num_found = login_worksheet.find(phone_num, in_column=3)
         row_num = phone_num_found.row
         username = login_worksheet.cell(row_num, 1).value
@@ -839,7 +839,7 @@ def print_art_font(string, font, color):
 def print_center_string(string):
     """
     Centers and prints the given text to the terminal
-    If text contains ascii escape codes for colour etc, these will stip
+    If text contains ascii escape codes for colour etc, strip
     these out for calculating spacing.
 
     Parameters:
@@ -861,7 +861,7 @@ def print_center_string(string):
 
 def clear_terminal():
     """
-    Clears text from trminal
+    Clears text from terminal
     """
     if os.name == "posix":  # Linux and macOS
         os.system("clear")
@@ -874,7 +874,7 @@ def check_username_in_use(username):
     Check if username is already stored in google sheet
 
     Parameters:
-        username (string): String to search for in gogle sheets
+        username (string): String to search for in google sheets
     Returns:
         Result (int): 1 Username found
                     2 Username not found
@@ -935,7 +935,7 @@ def hash_password(password):
     salt = bcrypt.gensalt()
     hashed_pass = bcrypt.hashpw(password.encode(), salt)
 
-    # Retured as strings for storage in gsheets
+    # Returned as strings for storage in gsheets
     hashed_pass = str(hashed_pass)
 
     return hashed_pass
@@ -1013,7 +1013,7 @@ def open_worksheet(worksheet_name):
         worksheet_name: Name of worksheet to open
 
     Returns:
-        Opened sheet or Flase (if error occurs)
+        Opened sheet or False (if error occurs)
     """
     try:
         opened_worksheet = SHEET.worksheet(worksheet_name)
@@ -1031,7 +1031,7 @@ def open_worksheet(worksheet_name):
         return False
 
     except Exception as e:
-        print_styled_msg(f"An error occured: {e}, "
+        print_styled_msg(f"An error occurred: {e}, "
                          "please try again, Loading ..\n", "red")
         time.sleep(3)
         return False
@@ -1041,7 +1041,7 @@ def open_worksheet(worksheet_name):
 
 def validate_selection(selection_str, available_choices):
     """
-    Validates user selcection from a choice of numbers
+    Validates user selection from a choice of numbers
     Validates that it can be converted to an int
     Also validates that user selection was one of the available choices
 
@@ -1106,7 +1106,7 @@ def get_valid_username(check_for_match=True):
             if check_for_match:
                 checked_username = check_username_in_use(username)
                 if checked_username == 1:  # Username in use
-                    raise ValueError("Username aleady in use")
+                    raise ValueError("Username already in use")
                 if checked_username == 3:  # API err
                     return 1
 
@@ -1124,7 +1124,7 @@ def get_valid_password(hash_pass=True):
     Hashes password via call to external function
 
     Parameters:
-        hash_pass: Flag used to control if password hashing is caried out
+        hash_pass: Flag used to control if password hashing is carried out
     Returns:
         password (string): Validated, Hashed password
     """
@@ -1191,7 +1191,7 @@ def get_valid_phone_num(check_for_match=True):
             if check_for_match:
                 checked_phone_num = check_phone_num_in_use(phone_num)
                 if checked_phone_num == 1:  # Username in use
-                    raise ValueError("Phone number aleady in use")
+                    raise ValueError("Phone number already in use")
                 if checked_phone_num == 3:  # API err
                     return 1
 
@@ -1213,6 +1213,6 @@ def main():
     display_welcome_banner()
 
 
-# Ensures main is only excuted when the script is directly run
+# Ensures main is only executed when the script is directly run
 if __name__ == "__main__":
     main()

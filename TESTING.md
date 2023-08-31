@@ -1,6 +1,6 @@
 # Pokemon Portfolio Testing
 
-Testing of this online game was ongoing throughout the development process. I used the developer tools in chrome and firefox to test all aspect of the site including its responsiveness.
+Testing of app was ongoing throughout the development process. I used the developer tools in chrome and firefox to test all aspect of the app.
 
 ![Preview of application](documentation/app-preview.png)
 
@@ -31,7 +31,7 @@ The [Code institutes Pep8 linter](https://pep8ci.herokuapp.com/) was used to ens
 ![Preview of application](documentation/testing/pokemon-ascii-art-pep8.png)
 
 </details>
-##HTML
+## HTML
 The automated testing of this apps HTML code was carried out using [Validator w3](https://validator.w3.org/nu/), all html pages passed without any errors or warnings, the results are shown below
 
 -   [HTML Test Results](https://validator.w3.org/nu/?doc=https%3A%2F%2Fpokemon-portfolio-158545b3517e.herokuapp.com%2F)
@@ -51,12 +51,12 @@ The tests for this app listed below were conducted to ensure it correct operatio
 
 | Test                                         | Expected Result                                                                                                        | Pass     |
 | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------- |
-| Game load no errors                          | No errors occur while finding creds file or connecting to google sheets                                                | &#10004; |
+| Home page - load no errors                   | No errors occur while finding creds file or connecting to google sheets                                                | &#10004; |
 | Home page - terminal cleared on entry        | Terminal cleared only home page details displayed                                                                      | &#10004; |
 | Home page - title printed correctly          | Ascii font art title printed in yellow and in centre of terminal                                                       | &#10004; |
 | Home page - tag line printed correctly       | Tag line printed in yellow and in centre of centre of terminal                                                         | &#10004; |
 | Home page - Pokemon image printed correctly  | Pokemon dot art printed correctly                                                                                      | &#10004; |
-| Home page - instructions printed correctly   | Instruction print in bold, centred, white and underlined, showing the correct range                                    | &#10004; |
+| Home page - instructions printed correctly   | Instruction printed in bold, centred, white and underlined, showing the correct range                                  | &#10004; |
 | Home page - options printed correctly        | List of 3 options (login, create account, password reset)                                                              | &#10004; |
 | Home page - selection prompt                 | Prompt appears, requesting selection                                                                                   | &#10004; |
 | Home page - invalid selection - out of range | Invalid selection: Available options (1 - 3), you entered 4, please try again displayed (red). Menu & prompt displayed | &#10004; |
@@ -76,18 +76,18 @@ The tests for this app listed below were conducted to ensure it correct operatio
 | Account creation - terminal cleared on entry          | Terminal cleared only account creation details displayed                                                         | &#10004; |
 | Account creation - title printed correctly            | Ascii font art title printed in yellow and in centre of terminal                                                 | &#10004; |
 | Account creation - Pokemon image printed correctly    | Pokemon dot art printed correctly                                                                                | &#10004; |
-| Account creation - instructions printed correctly     | Instructions print in bold, centred, white and underlined, showing the correct range                             | &#10004; |
+| Account creation - instructions printed correctly     | Instructions printed in bold, centred, white and underlined, showing the correct range                           | &#10004; |
 | Account creation - username prompt prints correctly   | Prompt appears, requesting username entry                                                                        | &#10004; |
 | Account creation - invalid username (<5)              | Username must be at least 5 characters, please try again. Username prompt displayed                              | &#10004; |
 | Account creation - invalid username (>15)             | Username can not be more than 15 characters, please try again. Username prompt displayed                         | &#10004; |
-| Account creation - invalid username - unallowed chars | Username can not be more than 15 characters, please try again. Username prompt displayed                         | &#10004; |
+| Account creation - invalid username - unallowed chars | Username can only use letters, numbers, \_ or - Username prompt displayed                                        | &#10004; |
 | Account creation - valid username, but unavailable    | Username already in use, please try again. Username prompt displayed                                             | &#10004; |
-| Account creation - valid username, available          | Username available, please try again. Username prompt displayed                                                  | &#10004; |
+| Account creation - valid username, available          | Username available. Password prompt displayed                                                                    | &#10004; |
 | Account creation - password prompt prints correctly   | Prompt appears, requesting password entry                                                                        | &#10004; |
 | Account creation - invalid password (<5)              | Invalid Password: Password must be at least 5 characters, please try again. Password prompt displayed            | &#10004; |
 | Account creation - invalid password (>15)             | Invalid Password: Password cannot be more than 15 characters, please try again. Password prompt displayed        | &#10004; |
 | Account creation - invalid password - unallowed chars | Invalid Password: Please only use letters, numbers, \_ , - , & or !, please try again. Password prompt displayed | &#10004; |
-| Account creation - valid password                     | Username available. Password prompt displayed                                                                    | &#10004; |
+| Account creation - valid password                     | Phone number prompt displayed                                                                                    | &#10004; |
 | Account creation - phone num prompt prints correctly  | Prompt appears, requesting phone number entry                                                                    | &#10004; |
 | Account creation - invalid phone num (<10)            | Invalid phone number: Phone number must be at least 10 digits, please try again. Phone num prompt displayed      | &#10004; |
 | Account creation - invalid phone num (>15)            | Invalid phone number: Phone number cannot be more than 15 digits, please try again. Phone num prompt displayed   | &#10004; |
@@ -105,7 +105,7 @@ The tests for this app listed below were conducted to ensure it correct operatio
 | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------- |
 | Successful acc creation - message printed correctly       | Message printed correctly (green, bold, centred, underlined)                                                  | &#10004; |
 | Successful acc creation - Pokemon image printed correctly | Pokemon dot art printed correctly                                                                             | &#10004; |
-| Successful acc creation - instructions printed correctly  | Instruction print in bold, centred, white and underlined, showing the correct range                           | &#10004; |
+| Successful acc creation - instructions printed correctly  | Instruction printed in bold, centred, white and underlined, showing the correct range                         | &#10004; |
 | Successful acc creation - options printed correctly       | List of 2 options (create another account, return to home page)                                               | &#10004; |
 | Successful acc creation - selection prompt                | Prompt appears, requesting selection                                                                          | &#10004; |
 | Successful acc creation - invalid selection - range       | Invalid selection: Available options (1 - 2), you entered 9, please try again. Inst, menu & prompt displayed  | &#10004; |
@@ -124,7 +124,7 @@ The tests for this app listed below were conducted to ensure it correct operatio
 | Password reset - terminal cleared on entry                 | Terminal cleared only password reset details displayed                                                      | &#10004; |
 | Password reset - title printed correctly                   | Ascii font art title printed in yellow and in centre of terminal                                            | &#10004; |
 | Password reset - Pokemon image printed correctly           | Pokemon dot art printed correctly                                                                           | &#10004; |
-| Password reset - instructions printed correctly            | Instructions print in bold, centred, white and underlined, showing the correct range                        | &#10004; |
+| Password reset - instructions printed correctly            | Instructions printed in bold, centred, white and underlined, showing the correct range                      | &#10004; |
 | Password reset - invalid phone num (<10)                   | Invalid phone number: Phone number must be at least 10 digits, please try again. Phone num prompt displayed | &#10004; |
 | Password reset - invalid phone num (>15)                   | Invalid phone number: Phone num cannot be more than 15 digits, please try again.Phone num prompt displayed  | &#10004; |
 | Password reset - invalid phone num- unallowed chars        | Invalid phone number: Please only use numbers, please try again. Phone num prompt displayed                 | &#10004; |
@@ -134,7 +134,7 @@ The tests for this app listed below were conducted to ensure it correct operatio
 | acc found pass prompt - invalid password (>15)             | Invalid Password: Password cannot be more than 15 characters, please try again. Password prompt displayed   | &#10004; |
 | acc found pass prompt - invalid password - unallowed chars | Invalid Password: Please only use letters, numbers, \_ , - , & or !, please try again. Prompt displayed     | &#10004; |
 | acc found pass prompt - valid password                     | Password has been reset. Instructions, menu(reset pass again, return to home page) & prompt displayed.      | &#10004; |
-| acc found pass prompt - valid password option 1 selected   | Password reset page shown. Password reset can be carried out again, leading back these options              | &#10004; |
+| acc found pass prompt - valid password option 1 selected   | Password reset page shown. Password reset can be carried out again                                          | &#10004; |
 | acc found pass prompt - valid password option 1 selected   | Home page is displayed                                                                                      | &#10004; |
 
 </details>
@@ -148,11 +148,11 @@ The tests for this app listed below were conducted to ensure it correct operatio
 | Login - terminal cleared on entry          | Terminal cleared only login details displayed                                                                    | &#10004; |
 | Login - title printed correctly            | Ascii font art title printed in yellow and in centre of terminal                                                 | &#10004; |
 | Login - Pokemon image printed correctly    | Pokemon dot art printed correctly                                                                                | &#10004; |
-| Login - instructions printed correctly     | Instructions print in bold, centred, white and underlined, showing the correct range                             | &#10004; |
+| Login - instructions printed correctly     | Instructions printed in bold, centred, white and underlined, showing the correct range                           | &#10004; |
 | Login - username prompt prints correctly   | Prompt appears, requesting username entry                                                                        | &#10004; |
 | Login - invalid username (<5)              | Username must be at least 5 characters, please try again. Username prompt displayed                              | &#10004; |
 | Login - invalid username (>15)             | Username can not be more than 15 characters, please try again. Username prompt displayed                         | &#10004; |
-| Login - invalid username - unallowed chars | Username can not be more than 15 characters, please try again. Username promptdisplayed                          | &#10004; |
+| Login - invalid username - unallowed chars | Username can only use letters, numbers, \_ or - Username prompt displayed                                        | &#10004; |
 | Login - valid username                     | Password prompt displayed                                                                                        | &#10004; |
 | Login - password prompt prints correctly   | Prompt appears, requesting password entry                                                                        | &#10004; |
 | Login - invalid password (<5)              | Invalid Password: Password must be at least 5 characters, please try again. Password prompt displayed            | &#10004; |
@@ -171,7 +171,7 @@ The tests for this app listed below were conducted to ensure it correct operatio
 | Main Menu - terminal cleared on entry        | Terminal cleared only main menu details displayed                                                                      | &#10004; |
 | Main Menu - title printed correctly          | Ascii font art title printed in yellow and in centre of terminal                                                       | &#10004; |
 | Main Menu - Pokemon image printed correctly  | Pokemon dot art printed correctly                                                                                      | &#10004; |
-| Main Menu - instructions printed correctly   | Instruction print in bold, centred, white and underlined, showing the correct range                                    | &#10004; |
+| Main Menu - instructions printed correctly   | Instruction printed in bold, centred, white and underlined, showing the correct range                                  | &#10004; |
 | Main Menu - options printed correctly        | List of 8 options (add card, remove card, view portfolio, view needed cards, appraise, delete, search, log out)        | &#10004; |
 | Main Menu - selection prompt                 | Prompt appears, requesting selection                                                                                   | &#10004; |
 | Main Menu - invalid selection - out of range | Invalid selection: Available options (1 - 8), you entered 9, please try again displayed (red). Menu & prompt displayed | &#10004; |
@@ -335,7 +335,7 @@ The tests for this app listed below were conducted to ensure it correct operatio
 | Remove card - input prompt                      | Prompt appears, requesting selection                                                                                   | &#10004; |
 | Remove card - invalid selection - out of range  | Invalid selection: Available options (1 - 102), you entered 103, please try again displayed (red). Prompt re-displayed | &#10004; |
 | Remove card - invalid selection - non integer   | Invalid selection: Your selection kk is not a number, please try again (red). Prompt re-displayed                      | &#10004; |
-| Remove card - valid selected, not in collection | This card is already in your collection, Instruction and prompt re-displayed                                           | &#10004; |
+| Remove card - valid selected, not in collection | You do not have this card in your collection, Instruction and prompt re-displayed                                      | &#10004; |
 | Remove card - valid selected, in collection     | Displays remove card success page                                                                                      | &#10004; |
 | Remove card - 1 selected                        | Message displays correct name, Alakazam and number(1), correct pokemon is displayed                                    | &#10004; |
 | Remove card - 2 selected                        | Message displays correct name, Blastoise and number(2), correct pokemon is displayed                                   | &#10004; |
@@ -518,8 +518,8 @@ The tests for this app listed below were conducted to ensure it correct operatio
 | Delete port confirm - terminal cleared on entry        | Terminal cleared only remove card details displayed                                                             | &#10004; |
 | Delete port confirm - title printed correctly          | Ascii font art title printed in yellow and in centre of terminal                                                | &#10004; |
 | Delete port confirm - Pokemon image printed correctly  | Pokemon dot art printed correctly                                                                               | &#10004; |
-| Delete port confirm - instructions printed correctly   | Instruction print in bold, centred, white and underlined, showing the correct range                             | &#10004; |
-| Delete port confirm - warning message                  | CAUTION, selecting option 1 this will delete all cards from your portfolio (red)                                | &#10004; |
+| Delete port confirm - instructions printed correctly   | Instruction printed in bold, centred, white and underlined, showing the correct range                           | &#10004; |
+| Delete port confirm - warning message                  | CAUTION, selecting option 1 will delete all cards from your portfolio (red)                                     | &#10004; |
 | Delete port confirm - input prompt                     | Prompt appears, requesting selection                                                                            | &#10004; |
 | Delete port confirm - invalid selection - out of range | Invalid selection: Available options (1 - 102), you entered 103, please try again displayed Prompt re-displayed | &#10004; |
 | Delete port confirm - invalid selection - non integer  | Invalid selection: Your selection kk is not a number, please try again (red). Prompt re-displayed               | &#10004; |
@@ -673,7 +673,7 @@ The tests for this app listed below were conducted to ensure it correct operatio
 | Card info - pokemon card details displayed   | Table showing card details (No., name, rarity, price, in collection) dislayed                                           | &#10004; |
 | Card info - input prompt                     | Prompt appears, requesting user hits enter to exit                                                                      | &#10004; |
 | Card info - Enter pressed                    | Main menu is displayed                                                                                                  | &#10004; |
-| Card info - instructions printed correctly   | Instruction print in bold, centred, white and underlined, showing the correct range                                     | &#10004; |
+| Card info - instructions printed correctly   | Instruction printed in bold, centred, white and underlined, showing the correct range                                   | &#10004; |
 | Card info - options printed correctly        | List of 2 options (Search again, main menu)                                                                             | &#10004; |
 | Card info - selection prompt                 | Prompt appears, requesting selection                                                                                    | &#10004; |
 | Card info - invalid selection - out of range | Invalid selection: Available options (1 or 2), you entered 3, please try again displayed (red). Menu & prompt displayed | &#10004; |
