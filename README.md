@@ -6,7 +6,8 @@ Pokemon Portfolio is a web page terminal application that allows users to manage
 
 <div style="text-align: center; font-size: 34px; font-weight: bold; text-decoration: underline ">
 
-[Pokemon Portfolio application page](https://pokemon-portfolio-158545b3517e.herokuapp.com/)
+[Pokemon Portfolio application page on Heroku](https://pokemon-portfolio-158545b3517e.herokuapp.com/)
+[Pokemon Portfolio application page on Render](https://ci-p3-pokemon-portfolio.onrender.com/)
 
 </div>
 
